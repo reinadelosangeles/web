@@ -64,9 +64,6 @@
             opacity: 1;
         }
     </style>
-
-    <!-- SDK de PayPal: locale=es_GT fuerza que la interfaz sea para Guatemala -->
-    <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD&locale=es_GT"></script>
 </head>
 
 <body class="font-sans bg-beige text-gray-800 flex flex-col min-h-screen pt-20">
@@ -227,8 +224,8 @@
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <div>
-                                    <label for="telefono" class="block text-sm font-semibold text-gray-700 mb-1">Teléfono (opcional)</label>
-                                    <input type="tel" id="telefono" name="telefono" placeholder="Tu número" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none transition">
+                                    <label for="telefono" class="block text-sm font-semibold text-gray-700 mb-1">Teléfono <span class="text-red-500">*</span></label>
+                                    <input type="tel" id="telefono" name="telefono" placeholder="Tu número de teléfono" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none transition" required>
                                 </div>
                                 <div>
                                     <label for="asunto" class="block text-sm font-semibold text-gray-700 mb-1">Asunto <span class="text-red-500">*</span></label>
@@ -271,29 +268,62 @@
                     </p>
                 </div>
 
-                <!-- Nueva Sección de Donación Online (PayPal/Tarjeta) -->
-                <div class="max-w-3xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border-t-4 border-blue-600 mb-16">
+                <!-- Nueva Sección de Donación Online Directa -->
+                <div class="max-w-2xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border-t-4 border-celeste-500 mb-16">
                     <div class="p-8 md:p-10 text-center">
                         <h3 class="font-bold text-2xl text-gray-800 mb-2">Donación Rápida con Tarjeta</h3>
-                        <p class="text-gray-500 mb-8">Usa tu tarjeta de crédito/débito o cuenta de PayPal de forma segura.</p>
+                        <p class="text-gray-500 mb-8">Selecciona tu monto y aporta de manera segura y directa.</p>
                         
                         <!-- Selector de Monto en Quetzales -->
                         <div class="mb-8">
                             <label class="block text-sm font-bold text-gray-700 mb-4">Selecciona tu aporte (Quetzales - GTQ):</label>
                             <div class="flex flex-wrap justify-center gap-3 mb-5">
                                 <button type="button" class="amount-btn bg-celeste-100 text-celeste-700 font-bold py-2 px-6 rounded-full border-2 border-celeste-500 hover:bg-celeste-500 hover:text-white transition" data-amount="10">Q 10</button>
-                                <button type="button" class="amount-btn bg-celeste-500 text-white font-bold py-2 px-6 rounded-full border-2 border-celeste-500 transition shadow-md" data-amount="100">Q 100</button>
+                                <button type="button" class="amount-btn bg-celeste-100 text-celeste-700 font-bold py-2 px-6 rounded-full border-2 border-celeste-500 hover:bg-celeste-500 hover:text-white transition" data-amount="100">Q 100</button>
                                 <button type="button" class="amount-btn bg-celeste-100 text-celeste-700 font-bold py-2 px-6 rounded-full border-2 border-celeste-500 hover:bg-celeste-500 hover:text-white transition" data-amount="150">Q 150</button>
                             </div>
                             <div class="flex justify-center items-center gap-2 max-w-xs mx-auto">
                                 <span class="font-bold text-gray-600 text-lg">Q</span>
-                                <input type="number" id="custom-amount" placeholder="Otro monto específico..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none text-center font-bold" min="5">
+                                <input type="number" id="custom-amount" placeholder="Monto (ej. 0)" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none text-center font-bold" min="0">
                             </div>
                         </div>
 
-                        <!-- Contenedor del Botón de PayPal -->
-                        <div id="paypal-button-container" class="max-w-sm mx-auto min-h-[150px] relative z-0"></div>
-                        <p class="text-xs text-gray-400 mt-4">* El cobro con tarjeta se procesa a través de los servidores de PayPal.</p>
+                        <!-- Formulario Simple de Tarjeta -->
+                        <div class="text-left max-w-sm mx-auto bg-gray-50 p-6 rounded-xl border border-gray-200">
+                            <div class="mb-4">
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Titular de la tarjeta</label>
+                                <input type="text" id="titular-tarjeta" placeholder="Nombre en la tarjeta" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none transition">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Número de tarjeta</label>
+                                <div class="relative">
+                                    <input type="text" id="num-tarjeta" placeholder="0000 0000 0000 0000" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none transition" maxlength="19">
+                                    <i class="fa-regular fa-credit-card absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 mb-6">
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-1">Vencimiento</label>
+                                    <input type="text" id="fecha-tarjeta" placeholder="MM/AA" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none transition" maxlength="5">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-1">CVV</label>
+                                    <input type="password" id="cvv-tarjeta" placeholder="123" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none transition" maxlength="4">
+                                </div>
+                            </div>
+
+                            <!-- Fake Captcha -->
+                            <div class="flex items-center gap-3 bg-white p-3 rounded-lg border border-gray-300 mb-6 shadow-sm">
+                                <input type="checkbox" id="captcha" class="w-5 h-5 accent-green-600 cursor-pointer">
+                                <label for="captcha" class="text-sm font-medium text-gray-700 cursor-pointer select-none">No soy un robot</label>
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/RecaptchaLogo.svg/1200px-RecaptchaLogo.svg.png" alt="reCAPTCHA" class="h-6 ml-auto object-contain">
+                            </div>
+
+                            <button type="button" onclick="procesarPagoDirecto()" class="w-full bg-celeste-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-celeste-800 transition shadow-md flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-lock"></i> Procesar Donación
+                            </button>
+                        </div>
+
                     </div>
                 </div>
 
@@ -419,9 +449,8 @@
         const menu = document.getElementById('mobile-menu');
         btn.addEventListener('click', () => { menu.classList.toggle('hidden'); });
 
-        // --- LÓGICA PARA DONACIONES EN QUETZALES CON PAYPAL ---
-        let currentAmountGTQ = 100; // Monto por defecto al cargar la página
-        const exchangeRate = 7.80; // Tasa de cambio aproximada de Q a $
+        // --- LÓGICA DE DONACIÓN EN QUETZALES CON TARJETA ---
+        let currentAmountGTQ = 0; // Monto inicia en 0 (sin botón seleccionado)
         const customAmountInput = document.getElementById('custom-amount');
         const amountButtons = document.querySelectorAll('.amount-btn');
 
@@ -438,7 +467,7 @@
             }
         }
 
-        // Asignar monto desde los botones
+        // Asignar monto desde los botones predeterminados
         amountButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 currentAmountGTQ = parseFloat(e.target.getAttribute('data-amount'));
@@ -449,45 +478,63 @@
         // Asignar monto personalizado
         customAmountInput.addEventListener('input', (e) => {
             const val = parseFloat(e.target.value);
-            if (val > 0) {
+            if (val >= 0) {
                 currentAmountGTQ = val;
                 updateActiveButton(null);
+            } else if(e.target.value === '') {
+                currentAmountGTQ = 0;
             }
         });
 
-        // Renderizar los Botones Reales de PayPal
-        if(window.paypal) {
-            paypal.Buttons({
-                style: {
-                    color:  'blue',
-                    shape:  'pill',
-                    label:  'donate'
-                },
-                createOrder: function(data, actions) {
-                    // Convertimos silenciosamente los GTQ a USD para PayPal
-                    let amountUSD = (currentAmountGTQ / exchangeRate).toFixed(2);
-                    
-                    return actions.order.create({
-                        purchase_units: [{
-                            amount: {
-                                value: amountUSD,
-                                currency_code: 'USD'
-                            },
-                            description: `Donativo a Legión de María (Monto Original: Q${currentAmountGTQ})`
-                        }]
-                    });
-                },
-                onApprove: function(data, actions) {
-                    return actions.order.capture().then(function(details) {
-                        alert('¡Muchísimas gracias por tu apoyo, ' + details.payer.name.given_name + '! Tu donación fue exitosa.');
-                    });
-                },
-                onError: function (err) {
-                    console.error('Error procesando el pago de PayPal:', err);
-                    alert('Hubo un error al intentar procesar el pago. Por favor intenta nuevamente.');
-                }
-            }).render('#paypal-button-container');
+        // Formato para el número de tarjeta (agregar espacios automáticamente)
+        document.getElementById('num-tarjeta').addEventListener('input', function (e) {
+            this.value = this.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim();
+        });
+
+        // Formato para la fecha de vencimiento (MM/AA)
+        document.getElementById('fecha-tarjeta').addEventListener('input', function (e) {
+            let val = this.value.replace(/\D/g, '');
+            if (val.length > 2) {
+                this.value = val.substring(0, 2) + '/' + val.substring(2, 4);
+            } else {
+                this.value = val;
+            }
+        });
+
+        // Procesar Pago Simulado
+        function procesarPagoDirecto() {
+            const titular = document.getElementById('titular-tarjeta').value;
+            const tarjeta = document.getElementById('num-tarjeta').value;
+            const fecha = document.getElementById('fecha-tarjeta').value;
+            const cvv = document.getElementById('cvv-tarjeta').value;
+            const captcha = document.getElementById('captcha').checked;
+
+            if (currentAmountGTQ <= 0 && currentAmountGTQ !== 0) {
+                alert("Por favor, selecciona o ingresa un monto válido a donar.");
+                return;
+            }
+
+            if (!titular || tarjeta.length < 16 || fecha.length < 5 || cvv.length < 3) {
+                alert("Por favor, completa correctamente todos los datos de la tarjeta.");
+                return;
+            }
+
+            if (!captcha) {
+                alert("Por favor, verifica que no eres un robot en la casilla de abajo.");
+                return;
+            }
+
+            // Simulación exitosa
+            alert(`¡Gracias de todo corazón, ${titular}! Se ha procesado tu donación de Q ${currentAmountGTQ} correctamente a la Legión de María.`);
+            
+            // Limpiar formulario tras éxito
+            document.getElementById('titular-tarjeta').value = '';
+            document.getElementById('num-tarjeta').value = '';
+            document.getElementById('fecha-tarjeta').value = '';
+            document.getElementById('cvv-tarjeta').value = '';
+            document.getElementById('captcha').checked = false;
         }
+
     </script>
 </body>
 
