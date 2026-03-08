@@ -65,8 +65,8 @@
         }
     </style>
 
-    <!-- SDK de PayPal: IMPORTANTE: Cambia "test" por tu Client-ID real de PayPal cuando estés listo para recibir dinero real -->
-    <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+    <!-- SDK de PayPal: locale=es_GT fuerza que la interfaz sea para Guatemala -->
+    <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD&locale=es_GT"></script>
 </head>
 
 <body class="font-sans bg-beige text-gray-800 flex flex-col min-h-screen pt-20">
@@ -216,8 +216,13 @@
                             <input type="hidden" name="_captcha" value="false">
                             
                             <div>
-                                <label for="nombre" class="block text-sm font-semibold text-gray-700 mb-1">Nombre completo</label>
+                                <label for="nombre" class="block text-sm font-semibold text-gray-700 mb-1">Nombre completo <span class="text-red-500">*</span></label>
                                 <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none transition" required>
+                            </div>
+
+                            <div>
+                                <label for="correo" class="block text-sm font-semibold text-gray-700 mb-1">Correo electrónico <span class="text-red-500">*</span></label>
+                                <input type="email" id="correo" name="correo" placeholder="ejemplo@correo.com" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none transition" required>
                             </div>
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -226,7 +231,7 @@
                                     <input type="tel" id="telefono" name="telefono" placeholder="Tu número" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none transition">
                                 </div>
                                 <div>
-                                    <label for="asunto" class="block text-sm font-semibold text-gray-700 mb-1">Asunto</label>
+                                    <label for="asunto" class="block text-sm font-semibold text-gray-700 mb-1">Asunto <span class="text-red-500">*</span></label>
                                     <select id="asunto" name="asunto" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none transition bg-white" required>
                                         <option value="" disabled selected>Selecciona una opción...</option>
                                         <option value="unirme">Deseo unirme a la Legión</option>
@@ -238,7 +243,7 @@
                             </div>
 
                             <div>
-                                <label for="mensaje" class="block text-sm font-semibold text-gray-700 mb-1">Mensaje</label>
+                                <label for="mensaje" class="block text-sm font-semibold text-gray-700 mb-1">Mensaje <span class="text-red-500">*</span></label>
                                 <textarea id="mensaje" name="mensaje" rows="4" placeholder="Escribe tu mensaje aquí..." class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none transition resize-none" required></textarea>
                             </div>
 
@@ -276,39 +281,42 @@
                         <div class="mb-8">
                             <label class="block text-sm font-bold text-gray-700 mb-4">Selecciona tu aporte (Quetzales - GTQ):</label>
                             <div class="flex flex-wrap justify-center gap-3 mb-5">
-                                <button type="button" class="amount-btn bg-celeste-100 text-celeste-700 font-bold py-2 px-6 rounded-full border-2 border-celeste-500 hover:bg-celeste-500 hover:text-white transition" data-amount="50">Q 50</button>
+                                <button type="button" class="amount-btn bg-celeste-100 text-celeste-700 font-bold py-2 px-6 rounded-full border-2 border-celeste-500 hover:bg-celeste-500 hover:text-white transition" data-amount="10">Q 10</button>
                                 <button type="button" class="amount-btn bg-celeste-500 text-white font-bold py-2 px-6 rounded-full border-2 border-celeste-500 transition shadow-md" data-amount="100">Q 100</button>
-                                <button type="button" class="amount-btn bg-celeste-100 text-celeste-700 font-bold py-2 px-6 rounded-full border-2 border-celeste-500 hover:bg-celeste-500 hover:text-white transition" data-amount="200">Q 200</button>
+                                <button type="button" class="amount-btn bg-celeste-100 text-celeste-700 font-bold py-2 px-6 rounded-full border-2 border-celeste-500 hover:bg-celeste-500 hover:text-white transition" data-amount="150">Q 150</button>
                             </div>
                             <div class="flex justify-center items-center gap-2 max-w-xs mx-auto">
                                 <span class="font-bold text-gray-600 text-lg">Q</span>
-                                <input type="number" id="custom-amount" placeholder="Otro monto..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none text-center font-bold" min="10">
+                                <input type="number" id="custom-amount" placeholder="Otro monto específico..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none text-center font-bold" min="5">
                             </div>
                         </div>
 
                         <!-- Contenedor del Botón de PayPal -->
                         <div id="paypal-button-container" class="max-w-sm mx-auto min-h-[150px] relative z-0"></div>
-                        <p class="text-xs text-gray-400 mt-4">* El cobro se procesará con una conversión interna aproximada a Dólares (USD) a través de los servidores internacionales de PayPal.</p>
+                        <p class="text-xs text-gray-400 mt-4">* El cobro con tarjeta se procesa a través de los servidores de PayPal.</p>
                     </div>
                 </div>
 
                 <div class="grid md:grid-cols-3 gap-8">
                     
-                    <!-- Tarjeta 1: Cuenta Bancaria -->
+                    <!-- Tarjeta 1: Cuenta Bancaria Banrural -->
                     <div class="bg-white rounded-2xl shadow-md overflow-hidden border-t-4 border-celeste-500 hover:shadow-lg transition transform hover:-translate-y-1">
                         <div class="p-8 text-center">
                             <div class="text-celeste-500 text-4xl mb-4">
                                 <i class="fa-solid fa-building-columns"></i>
                             </div>
                             <h3 class="font-bold text-xl text-gray-800 mb-2">Transferencia Bancaria</h3>
-                            <p class="text-gray-500 text-sm mb-6">Aporta desde tu banco de preferencia de manera segura.</p>
+                            <p class="text-gray-500 text-sm mb-6">Aporta directo a nuestra cuenta, sin comisiones de tarjeta.</p>
                             
                             <div class="bg-beige-50 p-4 rounded-lg text-left border border-gray-100">
-                                <p class="text-sm text-gray-500 uppercase tracking-wide font-semibold mb-1">Banco Local</p>
-                                <p class="font-bold text-gray-800 mb-3 text-lg">0000-0000-00</p>
-                                <p class="text-sm text-gray-500 uppercase tracking-wide font-semibold mb-1">Nombre de la cuenta</p>
-                                <p class="font-bold text-gray-800">Legión de María - Reina de Los Ángeles</p>
-                                <p class="text-xs text-gray-400 mt-2">Cuenta Monetaria / Quetzales</p>
+                                <p class="text-sm text-gray-500 uppercase tracking-wide font-semibold mb-1">Banco</p>
+                                <p class="font-bold text-gray-800 mb-3 text-lg">Banrural</p>
+
+                                <p class="text-sm text-gray-500 uppercase tracking-wide font-semibold mb-1">Cuenta de Ahorro</p>
+                                <p class="font-bold text-gray-800 mb-3 text-lg text-celeste-700">4321118366</p>
+                                
+                                <p class="text-sm text-gray-500 uppercase tracking-wide font-semibold mb-1">Nombre</p>
+                                <p class="font-bold text-gray-800">Legión de María Reina de Los Ángeles</p>
                             </div>
                         </div>
                     </div>
