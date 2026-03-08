@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Únete - Reina de Los Ángeles</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -65,6 +65,7 @@
             background-color: #FDFBF7;
             transition: all 0.3s ease;
             font-family: 'Nunito', sans-serif;
+            font-size: 16px; /* Evita el zoom automático en inputs de iOS/Safari */
         }
 
         .form-input:focus {
@@ -132,50 +133,52 @@
         </div>
     </header>
 
-    <main class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <main class="flex-grow flex items-center justify-center py-8 md:py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-5xl w-full bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row">
             
-            <!-- Panel Izquierdo: Información -->
-            <div class="md:w-5/12 bg-celeste-700 text-white p-10 flex flex-col justify-between">
+            <!-- Panel Izquierdo: Información (Ajuste de paddings para móvil) -->
+            <div class="md:w-5/12 bg-celeste-700 text-white p-6 sm:p-8 md:p-10 flex flex-col justify-between">
                 <div>
-                    <h2 class="text-3xl font-serif font-bold mb-4">Ponte en Contacto</h2>
-                    <p class="text-celeste-100 mb-8 font-light text-lg">
+                    <h2 class="text-2xl md:text-3xl font-serif font-bold mb-3 md:mb-4">Ponte en Contacto</h2>
+                    <p class="text-celeste-100 mb-6 md:mb-8 font-light text-base md:text-lg">
                         Únete a nuestra legión, comparte tus inquietudes o envíanos tus intenciones. Estamos aquí para escucharte y crecer juntos en la fe.
                     </p>
 
-                    <div class="space-y-6">
+                    <!-- Ajuste de espaciado para que no ocupe tanto en móvil -->
+                    <div class="space-y-4 md:space-y-6">
                         <div class="flex items-center">
-                            <div class="w-10 h-10 bg-celeste-500 rounded-full flex items-center justify-center mr-4">
+                            <div class="w-10 h-10 bg-celeste-500 rounded-full flex items-center justify-center mr-3 md:mr-4 shrink-0">
                                 <i class="fa-solid fa-location-dot"></i>
                             </div>
-                            <span>Totonicapán, Guatemala</span>
+                            <span class="text-sm md:text-base">Totonicapán, Guatemala</span>
                         </div>
                         <div class="flex items-center">
-                            <div class="w-10 h-10 bg-celeste-500 rounded-full flex items-center justify-center mr-4">
+                            <div class="w-10 h-10 bg-celeste-500 rounded-full flex items-center justify-center mr-3 md:mr-4 shrink-0">
                                 <i class="fa-solid fa-envelope"></i>
                             </div>
-                            <span>reinadelosangelestotonicapan06@gmail.com</span>
+                            <!-- Break-all para evitar que el correo rompa el diseño en pantallas muy pequeñas -->
+                            <span class="text-sm md:text-base break-all">reinadelosangelestotonicapan06@gmail.com</span>
                         </div>
                         <div class="flex items-center">
-                            <div class="w-10 h-10 bg-celeste-500 rounded-full flex items-center justify-center mr-4">
+                            <div class="w-10 h-10 bg-celeste-500 rounded-full flex items-center justify-center mr-3 md:mr-4 shrink-0">
                                 <i class="fa-brands fa-whatsapp text-lg"></i>
                             </div>
-                            <span>+502 XXXX-XXXX</span>
+                            <span class="text-sm md:text-base">+502 XXXX-XXXX</span>
                         </div>
                     </div>
                 </div>
                 
-                <div class="mt-12">
-                    <i class="fa-solid fa-dove text-celeste-300 text-6xl opacity-20"></i>
+                <div class="mt-8 md:mt-12 hidden sm:block">
+                    <i class="fa-solid fa-dove text-celeste-300 text-5xl md:text-6xl opacity-20"></i>
                 </div>
             </div>
 
-            <!-- Panel Derecho: Formulario -->
-            <div class="md:w-7/12 p-10 relative">
-                <h3 class="text-2xl font-bold text-celeste-700 mb-6 font-serif">Envíanos un mensaje</h3>
+            <!-- Panel Derecho: Formulario (Ajuste de paddings para móvil) -->
+            <div class="md:w-7/12 p-6 sm:p-8 md:p-10 relative">
+                <h3 class="text-xl md:text-2xl font-bold text-celeste-700 mb-5 md:mb-6 font-serif">Envíanos un mensaje</h3>
                 
                 <!-- El formulario -->
-                <form id="contactForm" class="space-y-5">
+                <form id="contactForm" class="space-y-4 md:space-y-5">
                     <div>
                         <label for="nombre" class="block text-sm font-semibold text-gray-700 mb-1">Nombre Completo</label>
                         <div class="relative">
@@ -211,13 +214,14 @@
                     </button>
                 </form>
 
-                <!-- Mensaje de Éxito Oculto (Se muestra por JS) -->
-                <div id="successMessage" class="hidden absolute inset-0 bg-white z-10 flex flex-col items-center justify-center p-10 text-center rounded-r-2xl">
-                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6">
-                        <i class="fa-solid fa-check text-4xl text-green-500"></i>
+                <!-- Mensaje de Éxito Oculto -->
+                <!-- Ajuste de bordes redondeados (abajo en móvil, a la derecha en escritorio) -->
+                <div id="successMessage" class="hidden absolute inset-0 bg-white z-10 flex flex-col items-center justify-center p-6 sm:p-10 text-center rounded-b-2xl md:rounded-bl-none md:rounded-r-2xl">
+                    <div class="w-16 h-16 md:w-20 md:h-20 bg-green-100 rounded-full flex items-center justify-center mb-4 md:mb-6">
+                        <i class="fa-solid fa-check text-3xl md:text-4xl text-green-500"></i>
                     </div>
-                    <h3 class="text-3xl font-serif font-bold text-gray-800 mb-2">¡Gracias por contactarnos!</h3>
-                    <p class="text-gray-600 text-lg mb-6">Tus datos han sido registrados exitosamente. Revisa tu bandeja de entrada o spam, te hemos enviado un correo de bienvenida.</p>
+                    <h3 class="text-2xl md:text-3xl font-serif font-bold text-gray-800 mb-2">¡Gracias por contactarnos!</h3>
+                    <p class="text-gray-600 text-base md:text-lg mb-6">Tus datos han sido registrados exitosamente. Revisa tu bandeja de entrada o spam, te hemos enviado un correo de bienvenida.</p>
                     <button onclick="window.location.reload()" class="bg-celeste-100 text-celeste-700 font-bold py-2 px-6 rounded-full hover:bg-celeste-300 transition">
                         Enviar otro mensaje
                     </button>
@@ -294,7 +298,6 @@
                 mode: 'no-cors' 
             })
             .then(() => {
-                // Al usar no-cors, la respuesta es opaca, pero si entra aquí es que se envió sin ser bloqueada
                 form.reset();
                 successMessage.classList.remove('hidden');
                 
