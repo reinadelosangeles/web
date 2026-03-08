@@ -287,21 +287,30 @@
             submitBtn.disabled = true;
             submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
 
-            // Enviar datos
-            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-                .then(response => {
-                    // Ocultar formulario y mostrar mensaje de éxito
-                    form.reset();
-                    successMessage.classList.remove('hidden');
-                })
-                .catch(error => {
-                    console.error('Error!', error.message);
-                    alert("Hubo un error al enviar tu información. Por favor, intenta de nuevo.");
-                    // Restaurar botón en caso de error
-                    submitBtn.innerHTML = originalBtnText;
-                    submitBtn.disabled = false;
-                    submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
-                });
+            // Enviar datos usando no-cors para evitar el bloqueo del navegador
+            fetch(scriptURL, { 
+                method: 'POST', 
+                body: new FormData(form),
+                mode: 'no-cors' 
+            })
+            .then(() => {
+                // Al usar no-cors, la respuesta es opaca, pero si entra aquí es que se envió sin ser bloqueada
+                form.reset();
+                successMessage.classList.remove('hidden');
+                
+                // Restauramos el botón internamente
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+            })
+            .catch(error => {
+                console.error('Error al enviar:', error);
+                alert("Hubo un error al enviar tu información. Por favor, intenta de nuevo.");
+                
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+            });
         });
     </script>
 </body>
