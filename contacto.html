@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto y Donaciones - Legión de María</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        celeste: { 100: '#E0F2FE', 300: '#7DD3FC', 500: '#0EA5E9', 700: '#0369A1' },
+                        beige: { DEFAULT: '#FDFBF7', 100: '#FEF9C3', 200: '#FEF08A' }
+                    },
+                    fontFamily: {
+                        serif: ['Lora', 'serif'],
+                        sans: ['Nunito', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .hero-contact-bg {
+            background-image: linear-gradient(rgba(3, 105, 161, 0.8), rgba(14, 165, 233, 0.85)), url('https://images.unsplash.com/photo-1529070538774-1843cb3265df?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #0EA5E9;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+
+        .dropdown-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+            opacity: 1;
+        }
+    </style>
+
+    <!-- SDK de PayPal: IMPORTANTE: Cambia "test" por tu Client-ID real de PayPal cuando estés listo para recibir dinero real -->
+    <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+</head>
+
+<body class="font-sans bg-beige text-gray-800 flex flex-col min-h-screen pt-20">
+
+    <header class="bg-white shadow-md fixed w-full top-0 z-50 border-b-4 border-celeste-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.location.href='index.html'">
+                    <!-- Logo Principal (logo1.jpg) -->
+                    <img src="logo1.jpg"
+                        class="h-10 w-10 md:h-12 md:w-12 rounded-full object-cover border-2 border-celeste-500 shadow-sm mr-3 flex-shrink-0"
+                        alt="Virgen Reina de Los Ángeles" onerror="this.src='https://via.placeholder.com/150/0EA5E9/FFFFFF?text=Logo'">
+
+                    <div class="flex flex-col">
+                        <span class="font-serif font-bold text-lg sm:text-xl md:text-2xl text-celeste-700 leading-none">Reina de Los Ángeles</span>
+                        <span class="text-[10px] sm:text-xs md:text-sm text-gray-500 font-semibold tracking-wider">LEGIÓN DE MARÍA</span>
+                    </div>
+                </div>
+
+                <nav class="hidden md:flex space-x-6 items-center">
+                    <a href="index.html" class="text-gray-700 hover:text-celeste-500 font-semibold nav-link">Inicio</a>
+                    <div class="relative dropdown py-4">
+                        <button class="text-gray-700 hover:text-celeste-500 font-semibold flex items-center gap-1 nav-link">
+                            Nuestra Legión <i class="fa-solid fa-chevron-down text-xs"></i>
+                        </button>
+                        <div class="dropdown-content absolute left-0 mt-4 w-48 bg-white rounded-md shadow-lg py-2 border border-beige-100">
+                            <a href="sobre-nosotros.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-beige-100 hover:text-celeste-700">Sobre nosotros</a>
+                            <a href="historia.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-beige-100 hover:text-celeste-700">Nuestra Historia</a>
+                        </div>
+                    </div>
+                    <a href="actividades.html" class="text-gray-700 hover:text-celeste-500 font-semibold nav-link">Actividades</a>
+                    <a href="tradiciones.html" class="text-gray-700 hover:text-celeste-500 font-semibold nav-link">Tradiciones</a>
+                    <a href="recursos.html" class="text-gray-700 hover:text-celeste-500 font-semibold nav-link">Recursos</a>
+                    <a href="galeria.html" class="text-gray-700 hover:text-celeste-500 font-semibold nav-link">Galería</a>
+                    <a href="noticias.html" class="text-gray-700 hover:text-celeste-500 font-semibold nav-link">Noticias</a>
+                    <a href="contacto.html" class="bg-celeste-700 text-white px-5 py-2 rounded-full font-semibold hover:bg-celeste-500 transition shadow-md border-2 border-celeste-700">Contacto</a>
+                </nav>
+
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="text-celeste-700 hover:text-celeste-500 focus:outline-none p-2">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menú Móvil -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 absolute w-full left-0 shadow-lg">
+            <div class="px-2 pt-2 pb-4 space-y-1 sm:px-3">
+                <a href="index.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-celeste-500 hover:bg-beige-100 rounded-md">Inicio</a>
+                <a href="sobre-nosotros.html" class="block px-3 py-2 text-base font-medium text-gray-600 hover:text-celeste-500 hover:bg-beige-100 rounded-md">Sobre nosotros</a>
+                <a href="historia.html" class="block px-3 py-2 text-base font-medium text-gray-600 hover:text-celeste-500 hover:bg-beige-100 rounded-md">Historia</a>
+                <a href="actividades.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-celeste-500 hover:bg-beige-100 rounded-md">Actividades</a>
+                <a href="tradiciones.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-celeste-500 hover:bg-beige-100 rounded-md">Tradiciones</a>
+                <a href="recursos.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-celeste-500 hover:bg-beige-100 rounded-md">Recursos</a>
+                <a href="galeria.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-celeste-500 hover:bg-beige-100 rounded-md">Galería</a>
+                <a href="noticias.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-celeste-500 hover:bg-beige-100 rounded-md">Noticias</a>
+                <a href="contacto.html" class="block px-3 py-2 text-base font-medium text-white bg-celeste-700 hover:bg-celeste-500 rounded-md mt-4 text-center">Contacto y Donaciones</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <!-- Hero Section Contacto -->
+        <section class="hero-contact-bg py-20 md:py-28 text-center text-white relative">
+            <div class="max-w-4xl mx-auto px-4 relative z-10">
+                <span class="text-beige-100 font-bold tracking-widest uppercase text-xs md:text-sm mb-4 inline-block">Comunícate con nosotros</span>
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-serif font-bold mb-6 drop-shadow-md">
+                    Contacto y Donaciones
+                </h1>
+                <div class="w-24 h-1 bg-celeste-300 mx-auto rounded-full mb-6"></div>
+                <p class="text-lg md:text-xl font-light text-celeste-100 max-w-2xl mx-auto">
+                    Estamos aquí para escucharte, resolver tus dudas y agradecer tu apoyo a nuestra misión evangelizadora.
+                </p>
+            </div>
+        </section>
+
+        <!-- Sección de Contacto -->
+        <section class="py-16 md:py-20 bg-white relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="grid md:grid-cols-2 gap-12 lg:gap-16 items-start">
+                    
+                    <!-- Información de Contacto -->
+                    <div>
+                        <h2 class="text-3xl font-serif font-bold text-celeste-700 mb-6">Ponte en contacto</h2>
+                        <p class="text-gray-600 text-lg mb-8 leading-relaxed">
+                            ¿Te gustaría unirte a la Legión de María, solicitar una visita para un enfermo, o simplemente conocer más sobre nuestras actividades? Escríbenos y te responderemos a la brevedad.
+                        </p>
+
+                        <div class="space-y-6">
+                            <!-- Ubicación -->
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-celeste-50 rounded-full flex items-center justify-center text-celeste-500 text-xl flex-shrink-0">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-800 text-lg">Nuestra Ubicación</h4>
+                                    <p class="text-gray-600">Totonicapán, Guatemala<br>Parroquia San Miguel Arcángel (Sede principal)</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Teléfono / WhatsApp -->
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-celeste-50 rounded-full flex items-center justify-center text-green-500 text-xl flex-shrink-0">
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-800 text-lg">WhatsApp / Teléfono</h4>
+                                    <p class="text-gray-600">+502 0000 0000</p>
+                                </div>
+                            </div>
+
+                            <!-- Redes Sociales -->
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-celeste-50 rounded-full flex items-center justify-center text-blue-600 text-xl flex-shrink-0">
+                                    <i class="fa-brands fa-facebook-f"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-800 text-lg">Facebook</h4>
+                                    <a href="https://www.facebook.com/profile.php?id=100069853659199" target="_blank" class="text-celeste-500 hover:text-celeste-700 transition">Legión de María Reina de Los Ángeles</a>
+                                </div>
+                            </div>
+
+                            <!-- Instagram -->
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-celeste-50 rounded-full flex items-center justify-center text-pink-600 text-xl flex-shrink-0">
+                                    <i class="fa-brands fa-instagram"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-800 text-lg">Instagram</h4>
+                                    <a href="#" target="_blank" class="text-celeste-500 hover:text-celeste-700 transition">@legiondemaria_totonicapan</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formulario -->
+                    <div class="bg-beige-50 p-8 rounded-2xl shadow-sm border border-gray-100">
+                        <h3 class="text-2xl font-serif font-bold text-celeste-700 mb-6">Envíanos un mensaje</h3>
+                        
+                        <!-- FormSubmit: Cambia "tu_correo@ejemplo.com" por el correo real de la Legión -->
+                        <form action="https://formsubmit.co/tu_correo@ejemplo.com" method="POST" class="space-y-5">
+                            
+                            <!-- Configuraciones ocultas para el correo -->
+                            <input type="hidden" name="_subject" value="Nuevo mensaje desde la Web de la Legión">
+                            <input type="hidden" name="_captcha" value="false">
+                            
+                            <div>
+                                <label for="nombre" class="block text-sm font-semibold text-gray-700 mb-1">Nombre completo</label>
+                                <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none transition" required>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div>
+                                    <label for="telefono" class="block text-sm font-semibold text-gray-700 mb-1">Teléfono (opcional)</label>
+                                    <input type="tel" id="telefono" name="telefono" placeholder="Tu número" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none transition">
+                                </div>
+                                <div>
+                                    <label for="asunto" class="block text-sm font-semibold text-gray-700 mb-1">Asunto</label>
+                                    <select id="asunto" name="asunto" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none transition bg-white" required>
+                                        <option value="" disabled selected>Selecciona una opción...</option>
+                                        <option value="unirme">Deseo unirme a la Legión</option>
+                                        <option value="visita">Solicitar visita a enfermo</option>
+                                        <option value="donacion">Información sobre donaciones</option>
+                                        <option value="otro">Otro</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="mensaje" class="block text-sm font-semibold text-gray-700 mb-1">Mensaje</label>
+                                <textarea id="mensaje" name="mensaje" rows="4" placeholder="Escribe tu mensaje aquí..." class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none transition resize-none" required></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full bg-celeste-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-celeste-700 transition shadow-md flex items-center justify-center gap-2">
+                                Enviar mensaje <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Donaciones -->
+        <section class="py-16 md:py-24 bg-celeste-50 relative border-t border-celeste-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-celeste-500 text-3xl shadow-sm mx-auto mb-6">
+                        <i class="fa-solid fa-hand-holding-heart"></i>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-celeste-700 mb-4">Apoya Nuestra Misión</h2>
+                    <p class="text-gray-600 text-lg leading-relaxed">
+                        Tu generosidad nos permite continuar con nuestras obras de evangelización, ayuda social, sostenimiento de nuestro Praesidium y la compra de insumos para llevar esperanza a quienes más lo necesitan.
+                    </p>
+                </div>
+
+                <!-- Nueva Sección de Donación Online (PayPal/Tarjeta) -->
+                <div class="max-w-3xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border-t-4 border-blue-600 mb-16">
+                    <div class="p-8 md:p-10 text-center">
+                        <h3 class="font-bold text-2xl text-gray-800 mb-2">Donación Rápida con Tarjeta</h3>
+                        <p class="text-gray-500 mb-8">Usa tu tarjeta de crédito/débito o cuenta de PayPal de forma segura.</p>
+                        
+                        <!-- Selector de Monto en Quetzales -->
+                        <div class="mb-8">
+                            <label class="block text-sm font-bold text-gray-700 mb-4">Selecciona tu aporte (Quetzales - GTQ):</label>
+                            <div class="flex flex-wrap justify-center gap-3 mb-5">
+                                <button type="button" class="amount-btn bg-celeste-100 text-celeste-700 font-bold py-2 px-6 rounded-full border-2 border-celeste-500 hover:bg-celeste-500 hover:text-white transition" data-amount="50">Q 50</button>
+                                <button type="button" class="amount-btn bg-celeste-500 text-white font-bold py-2 px-6 rounded-full border-2 border-celeste-500 transition shadow-md" data-amount="100">Q 100</button>
+                                <button type="button" class="amount-btn bg-celeste-100 text-celeste-700 font-bold py-2 px-6 rounded-full border-2 border-celeste-500 hover:bg-celeste-500 hover:text-white transition" data-amount="200">Q 200</button>
+                            </div>
+                            <div class="flex justify-center items-center gap-2 max-w-xs mx-auto">
+                                <span class="font-bold text-gray-600 text-lg">Q</span>
+                                <input type="number" id="custom-amount" placeholder="Otro monto..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none text-center font-bold" min="10">
+                            </div>
+                        </div>
+
+                        <!-- Contenedor del Botón de PayPal -->
+                        <div id="paypal-button-container" class="max-w-sm mx-auto min-h-[150px] relative z-0"></div>
+                        <p class="text-xs text-gray-400 mt-4">* El cobro se procesará con una conversión interna aproximada a Dólares (USD) a través de los servidores internacionales de PayPal.</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    
+                    <!-- Tarjeta 1: Cuenta Bancaria -->
+                    <div class="bg-white rounded-2xl shadow-md overflow-hidden border-t-4 border-celeste-500 hover:shadow-lg transition transform hover:-translate-y-1">
+                        <div class="p-8 text-center">
+                            <div class="text-celeste-500 text-4xl mb-4">
+                                <i class="fa-solid fa-building-columns"></i>
+                            </div>
+                            <h3 class="font-bold text-xl text-gray-800 mb-2">Transferencia Bancaria</h3>
+                            <p class="text-gray-500 text-sm mb-6">Aporta desde tu banco de preferencia de manera segura.</p>
+                            
+                            <div class="bg-beige-50 p-4 rounded-lg text-left border border-gray-100">
+                                <p class="text-sm text-gray-500 uppercase tracking-wide font-semibold mb-1">Banco Local</p>
+                                <p class="font-bold text-gray-800 mb-3 text-lg">0000-0000-00</p>
+                                <p class="text-sm text-gray-500 uppercase tracking-wide font-semibold mb-1">Nombre de la cuenta</p>
+                                <p class="font-bold text-gray-800">Legión de María - Reina de Los Ángeles</p>
+                                <p class="text-xs text-gray-400 mt-2">Cuenta Monetaria / Quetzales</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta 2: Donación en Especie -->
+                    <div class="bg-white rounded-2xl shadow-md overflow-hidden border-t-4 border-beige-200 hover:shadow-lg transition transform hover:-translate-y-1">
+                        <div class="p-8 text-center">
+                            <div class="text-yellow-500 text-4xl mb-4">
+                                <i class="fa-solid fa-box-open"></i>
+                            </div>
+                            <h3 class="font-bold text-xl text-gray-800 mb-2">Donación en Especie</h3>
+                            <p class="text-gray-500 text-sm mb-6">Recibimos insumos para nuestras labores comunitarias.</p>
+                            
+                            <ul class="text-left text-gray-600 space-y-3 mb-6">
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-celeste-500"></i> Víveres no perecederos</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-celeste-500"></i> Veladoras y flores</li>
+                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-celeste-500"></i> Material para evangelización</li>
+                            </ul>
+
+                            <a href="#nombre" onclick="document.getElementById('asunto').value='donacion';" class="block w-full bg-white text-celeste-700 border border-celeste-500 font-semibold py-2 rounded-lg hover:bg-celeste-50 transition">Coordinar entrega</a>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta 3: Ofrenda Presencial -->
+                    <div class="bg-white rounded-2xl shadow-md overflow-hidden border-t-4 border-celeste-700 hover:shadow-lg transition transform hover:-translate-y-1">
+                        <div class="p-8 text-center">
+                            <div class="text-celeste-700 text-4xl mb-4">
+                                <i class="fa-solid fa-church"></i>
+                            </div>
+                            <h3 class="font-bold text-xl text-gray-800 mb-2">Ofrenda Presencial</h3>
+                            <p class="text-gray-500 text-sm mb-6">Acércate a nuestras reuniones o a la parroquia.</p>
+                            
+                            <div class="text-gray-600 mb-6">
+                                <p class="mb-2">Puedes entregar tu donativo directamente a nuestros oficiales durante las juntas semanales del Praesidium.</p>
+                                <p class="text-sm italic mt-4 text-gray-500">"Dios ama al dador alegre." - 2 Corintios 9:7</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-celeste-700 text-white pt-12 pb-6 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div class="col-span-1 md:col-span-2 text-center md:text-left">
+                    <div class="flex items-center justify-center md:justify-start mb-4 cursor-pointer" onclick="window.location.href='index.html'">
+                        <!-- Logo Footer (logo1.jpg) -->
+                        <img src="logo1.jpg"
+                            class="h-10 w-10 md:h-12 md:w-12 rounded-full object-cover border-2 border-beige-100 shadow-sm mr-3 flex-shrink-0"
+                            alt="Virgen Reina de Los Ángeles" onerror="this.src='https://via.placeholder.com/150/0EA5E9/FFFFFF?text=Logo'">
+
+                        <span class="font-serif font-bold text-xl md:text-2xl">Reina de Los Ángeles</span>
+                    </div>
+                    <p class="text-celeste-100 text-sm max-w-sm mx-auto md:mx-0">
+                        Praesidium de la Legión de María dedicado a la evangelización y servicio comunitario bajo la protección de nuestra Madre Celestial.
+                    </p>
+                </div>
+                <div class="text-center md:text-left">
+                    <h4 class="font-bold text-lg mb-4 text-beige-100 border-b border-celeste-500 pb-2 inline-block">Enlaces Rápidos</h4>
+                    <ul class="space-y-2 text-sm text-celeste-100">
+                        <li><a href="index.html" class="hover:text-white transition">Inicio</a></li>
+                        <li><a href="sobre-nosotros.html" class="hover:text-white transition">Sobre Nosotros</a></li>
+                        <li><a href="actividades.html" class="hover:text-white transition">Actividades</a></li>
+                        <li><a href="recursos.html" class="hover:text-white transition">Recursos</a></li>
+                    </ul>
+                </div>
+                <div class="text-center md:text-left">
+                    <h4 class="font-bold text-lg mb-4 text-beige-100 border-b border-celeste-500 pb-2 inline-block">Síguenos</h4>
+                    <div class="flex justify-center md:justify-start space-x-4">
+                        <a href="https://www.facebook.com/profile.php?id=100069853659199" target="_blank" rel="noopener noreferrer"
+                            class="w-10 h-10 bg-celeste-500 rounded-full flex items-center justify-center hover:bg-white hover:text-celeste-700 transition">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+
+                        <a href="#" target="_blank" rel="noopener noreferrer"
+                            class="w-10 h-10 bg-celeste-500 rounded-full flex items-center justify-center hover:bg-white hover:text-celeste-700 transition">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+
+                        <a href="#" target="_blank" rel="noopener noreferrer"
+                            class="w-10 h-10 bg-celeste-500 rounded-full flex items-center justify-center hover:bg-white hover:text-celeste-700 transition">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-celeste-500 pt-6 text-center text-sm text-celeste-200">
+                <p>&copy; <span id="year"></span> Legión de María - Reina de Los Ángeles. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+        const btn = document.getElementById('mobile-menu-button');
+        const menu = document.getElementById('mobile-menu');
+        btn.addEventListener('click', () => { menu.classList.toggle('hidden'); });
+
+        // --- LÓGICA PARA DONACIONES EN QUETZALES CON PAYPAL ---
+        let currentAmountGTQ = 100; // Monto por defecto al cargar la página
+        const exchangeRate = 7.80; // Tasa de cambio aproximada de Q a $
+        const customAmountInput = document.getElementById('custom-amount');
+        const amountButtons = document.querySelectorAll('.amount-btn');
+
+        // Función visual para seleccionar montos
+        function updateActiveButton(selectedBtn) {
+            amountButtons.forEach(btn => {
+                btn.classList.remove('bg-celeste-500', 'text-white', 'shadow-md');
+                btn.classList.add('bg-celeste-100', 'text-celeste-700');
+            });
+            if (selectedBtn) {
+                selectedBtn.classList.remove('bg-celeste-100', 'text-celeste-700');
+                selectedBtn.classList.add('bg-celeste-500', 'text-white', 'shadow-md');
+                customAmountInput.value = ''; 
+            }
+        }
+
+        // Asignar monto desde los botones
+        amountButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                currentAmountGTQ = parseFloat(e.target.getAttribute('data-amount'));
+                updateActiveButton(e.target);
+            });
+        });
+
+        // Asignar monto personalizado
+        customAmountInput.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value);
+            if (val > 0) {
+                currentAmountGTQ = val;
+                updateActiveButton(null);
+            }
+        });
+
+        // Renderizar los Botones Reales de PayPal
+        if(window.paypal) {
+            paypal.Buttons({
+                style: {
+                    color:  'blue',
+                    shape:  'pill',
+                    label:  'donate'
+                },
+                createOrder: function(data, actions) {
+                    // Convertimos silenciosamente los GTQ a USD para PayPal
+                    let amountUSD = (currentAmountGTQ / exchangeRate).toFixed(2);
+                    
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: amountUSD,
+                                currency_code: 'USD'
+                            },
+                            description: `Donativo a Legión de María (Monto Original: Q${currentAmountGTQ})`
+                        }]
+                    });
+                },
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(details) {
+                        alert('¡Muchísimas gracias por tu apoyo, ' + details.payer.name.given_name + '! Tu donación fue exitosa.');
+                    });
+                },
+                onError: function (err) {
+                    console.error('Error procesando el pago de PayPal:', err);
+                    alert('Hubo un error al intentar procesar el pago. Por favor intenta nuevamente.');
+                }
+            }).render('#paypal-button-container');
+        }
+    </script>
+</body>
+
+</html>
