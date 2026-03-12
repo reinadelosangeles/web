@@ -175,10 +175,10 @@
                         
                         <div class="text-gray-600 mb-6 space-y-3">
                             <p>
-                                Con gran alegría y entusiasmo anunciamos el lanzamiento oficial del sitio web del Praesidium <strong>"Reina de Los Ángeles"</strong>. Esta nueva plataforma digital ha sido creada con el propósito de acercarnos más a nuestra comunidad en Totonicapán y adaptarnos a los nuevos tiempos.
+                                Con gran alegría y entusiasmo anunciamos el lanzamiento oficial del sitio web del Praesidium <strong><a href="https://reinadelosangeles.github.io/web/index.html" target="_blank" class="text-celeste-500 hover:text-celeste-700 hover:underline font-bold transition">"Reina de Los Ángeles"</a></strong>. Esta nueva plataforma digital ha sido creada con el propósito de acercarnos más a nuestra comunidad en Totonicapán y adaptarnos a los nuevos tiempos.
                             </p>
                             <p>
-                                A partir de ahora, todos los miembros, simpatizantes y personas interesadas podrán acceder fácilmente a nuestros recursos formativos, revivir momentos especiales en nuestra galería fotográfica y mantenerse al tanto de las actividades y tradiciones de la Legión de María.
+                                A partir de ahora, todos los miembros, simpatizantes y personas interesadas podrán acceder fácilmente a nuestros recursos formativos, revivir momentos especiales en nuestra galería fotográfica y mantenerse al tanto de las actividades y tradiciones de la Legión de María a través de <a href="https://reinadelosangeles.github.io/web/index.html" target="_blank" class="text-celeste-500 hover:underline font-semibold">este enlace</a>.
                             </p>
                             <p>
                                 Invitamos a todos a explorar las diferentes secciones de la página, conocer más sobre nuestra historia y unirse a nuestra misión evangelizadora bajo la guía protectora de nuestra Madre Celestial. ¡Bienvenidos a nuestro nuevo hogar digital!
@@ -187,7 +187,7 @@
                         
                         <div class="pt-4 border-t border-gray-100 flex justify-between items-center mt-auto">
                             <span class="text-sm text-gray-400">Por: Directiva del Praesidium</span>
-                            <button onclick="alert('Enlace copiado al portapapeles')" class="text-celeste-700 font-bold hover:text-celeste-500 transition flex items-center gap-2 bg-beige-100 hover:bg-celeste-100 px-4 py-2 rounded-lg">
+                            <button onclick="copyShareLink('https://reinadelosangeles.github.io/web/index.html', this)" class="text-celeste-700 font-bold hover:text-celeste-500 transition flex items-center gap-2 bg-beige-100 hover:bg-celeste-100 px-4 py-2 rounded-lg">
                                 Compartir <i class="fa-solid fa-share-nodes"></i>
                             </button>
                         </div>
@@ -262,6 +262,29 @@
         const btn = document.getElementById('mobile-menu-button');
         const menu = document.getElementById('mobile-menu');
         btn.addEventListener('click', () => { menu.classList.toggle('hidden'); });
+
+        // Función para copiar el enlace de la noticia
+        function copyShareLink(url, btnElement) {
+            // Se utiliza el método clásico para mayor compatibilidad con iframes y navegadores antiguos
+            const tempInput = document.createElement("input");
+            tempInput.value = url;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            // Efecto visual en el botón
+            const originalHTML = btnElement.innerHTML;
+            btnElement.innerHTML = '¡Copiado! <i class="fa-solid fa-check"></i>';
+            btnElement.classList.remove('text-celeste-700');
+            btnElement.classList.add('text-green-600');
+            
+            setTimeout(() => {
+                btnElement.innerHTML = originalHTML;
+                btnElement.classList.remove('text-green-600');
+                btnElement.classList.add('text-celeste-700');
+            }, 2000);
+        }
     </script>
 </body>
 
