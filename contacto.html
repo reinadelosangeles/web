@@ -15,7 +15,7 @@
                 extend: {
                     colors: {
                         celeste: { 100: '#E0F2FE', 300: '#7DD3FC', 500: '#0EA5E9', 700: '#0369A1' },
-                        beige: { DEFAULT: '#FDFBF7', 100: '#FEF9C3', 200: '#FEF08A' }
+                        beige: { DEFAULT: '#FDFBF7', 100: '#FEF9C3', 200: '#FEF08A', 50: '#FAFAF9' }
                     },
                     fontFamily: {
                         serif: ['Lora', 'serif'],
@@ -64,18 +64,15 @@
             opacity: 1;
         }
     </style>
-
-    <!-- SDK de PayPal: locale=es_GT fuerza que la interfaz sea para Guatemala -->
-    <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD&locale=es_GT"></script>
 </head>
 
 <body class="font-sans bg-beige text-gray-800 flex flex-col min-h-screen pt-20">
 
+    <!-- Header / Navbar -->
     <header class="bg-white shadow-md fixed w-full top-0 z-50 border-b-4 border-celeste-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.location.href='index.html'">
-                    <!-- Logo Principal (logo1.jpg) -->
                     <img src="logo1.jpg"
                         class="h-10 w-10 md:h-12 md:w-12 rounded-full object-cover border-2 border-celeste-500 shadow-sm mr-3 flex-shrink-0"
                         alt="Virgen Reina de Los Ángeles" onerror="this.src='https://via.placeholder.com/150/0EA5E9/FFFFFF?text=Logo'">
@@ -204,16 +201,12 @@
                         </div>
                     </div>
 
-                    <!-- Formulario -->
+                    <!-- Formulario con integración a Google Apps Script -->
                     <div class="bg-beige-50 p-8 rounded-2xl shadow-sm border border-gray-100">
                         <h3 class="text-2xl font-serif font-bold text-celeste-700 mb-6">Envíanos un mensaje</h3>
                         
-                        <!-- FormSubmit: Cambia "tu_correo@ejemplo.com" por el correo real de la Legión -->
-                        <form action="https://formsubmit.co/tu_correo@ejemplo.com" method="POST" class="space-y-5">
-                            
-                            <!-- Configuraciones ocultas para el correo -->
-                            <input type="hidden" name="_subject" value="Nuevo mensaje desde la Web de la Legión">
-                            <input type="hidden" name="_captcha" value="false">
+                        <!-- Formulario AJAX -->
+                        <form id="contactForm" class="space-y-5">
                             
                             <div>
                                 <label for="nombre" class="block text-sm font-semibold text-gray-700 mb-1">Nombre completo <span class="text-red-500">*</span></label>
@@ -227,17 +220,17 @@
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <div>
-                                    <label for="telefono" class="block text-sm font-semibold text-gray-700 mb-1">Teléfono <span class="text-red-500">*</span></label>
+                                    <label for="telefono" class="block text-sm font-semibold text-gray-700 mb-1">Teléfono/WhatsApp <span class="text-red-500">*</span></label>
                                     <input type="tel" id="telefono" name="telefono" placeholder="Tu número de teléfono" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none transition" required>
                                 </div>
                                 <div>
                                     <label for="asunto" class="block text-sm font-semibold text-gray-700 mb-1">Asunto <span class="text-red-500">*</span></label>
                                     <select id="asunto" name="asunto" class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none transition bg-white" required>
                                         <option value="" disabled selected>Selecciona una opción...</option>
-                                        <option value="unirme">Deseo unirme a la Legión</option>
-                                        <option value="visita">Solicitar visita a enfermo</option>
-                                        <option value="donacion">Información sobre donaciones</option>
-                                        <option value="otro">Otro</option>
+                                        <option value="Deseo unirme">Deseo unirme a la Legión</option>
+                                        <option value="Visita a enfermo">Solicitar visita a enfermo</option>
+                                        <option value="Donaciones">Información sobre donaciones</option>
+                                        <option value="Otro">Otro</option>
                                     </select>
                                 </div>
                             </div>
@@ -247,9 +240,15 @@
                                 <textarea id="mensaje" name="mensaje" rows="4" placeholder="Escribe tu mensaje aquí..." class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none transition resize-none" required></textarea>
                             </div>
 
-                            <button type="submit" class="w-full bg-celeste-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-celeste-700 transition shadow-md flex items-center justify-center gap-2">
-                                Enviar mensaje <i class="fa-solid fa-paper-plane"></i>
+                            <!-- Botón y Spinner de carga -->
+                            <button type="submit" id="submitBtn" class="w-full bg-celeste-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-celeste-700 transition shadow-md flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed">
+                                <span id="btnText">Enviar mensaje</span> 
+                                <i id="btnIcon" class="fa-solid fa-paper-plane"></i>
+                                <i id="btnSpinner" class="fa-solid fa-spinner fa-spin hidden"></i>
                             </button>
+
+                            <!-- Div de alerta de Éxito / Error -->
+                            <div id="formMessage" class="hidden text-center p-3 rounded-lg font-semibold text-sm transition-all"></div>
                         </form>
                     </div>
 
@@ -257,7 +256,7 @@
             </div>
         </section>
 
-        <!-- Sección de Donaciones -->
+        <!-- Sección de Donaciones Bancarias -->
         <section class="py-16 md:py-24 bg-celeste-50 relative border-t border-celeste-100">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 
@@ -271,94 +270,58 @@
                     </p>
                 </div>
 
-                <!-- Nueva Sección de Donación Online Directa (Real) -->
-                <div class="max-w-2xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border-t-4 border-celeste-500 mb-16">
-                    <div class="p-8 md:p-10 text-center">
-                        <h3 class="font-bold text-2xl text-gray-800 mb-2">Donación Rápida Segura</h3>
-                        <p class="text-gray-500 mb-8">Selecciona tu monto y aporta a través de PayPal o Tarjeta de crédito/débito de manera segura y real.</p>
-                        
-                        <!-- Selector de Monto en Quetzales -->
-                        <div class="mb-8">
-                            <label class="block text-sm font-bold text-gray-700 mb-4">Selecciona tu aporte (Quetzales - GTQ):</label>
-                            <div class="flex flex-wrap justify-center gap-3 mb-5">
-                                <button type="button" class="amount-btn bg-celeste-100 text-celeste-700 font-bold py-2 px-6 rounded-full border-2 border-celeste-500 hover:bg-celeste-500 hover:text-white transition" data-amount="10">Q 10</button>
-                                <button type="button" class="amount-btn bg-celeste-100 text-celeste-700 font-bold py-2 px-6 rounded-full border-2 border-celeste-500 hover:bg-celeste-500 hover:text-white transition" data-amount="100">Q 100</button>
-                                <button type="button" class="amount-btn bg-celeste-100 text-celeste-700 font-bold py-2 px-6 rounded-full border-2 border-celeste-500 hover:bg-celeste-500 hover:text-white transition" data-amount="150">Q 150</button>
-                            </div>
-                            <div class="flex justify-center items-center gap-2 max-w-xs mx-auto">
-                                <span class="font-bold text-gray-600 text-lg">Q</span>
-                                <input type="number" id="custom-amount" placeholder="Monto (ej. 50)" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-celeste-500 focus:ring-2 focus:ring-celeste-100 outline-none text-center font-bold" min="0">
-                            </div>
-                        </div>
-
-                        <!-- Botones Reales de PayPal -->
-                        <div id="paypal-button-container" class="max-w-sm mx-auto min-h-[150px] relative z-0"></div>
-                        <p class="text-xs text-gray-400 mt-4">* El cobro con tarjeta se procesa a través de los servidores internacionales de PayPal. La conversión de Q a $ es aproximada.</p>
-
-                    </div>
-                </div>
-
                 <div class="grid md:grid-cols-3 gap-8">
                     
-                    <!-- Tarjeta 1: Cuenta Bancaria Banrural -->
-                    <div class="bg-white rounded-2xl shadow-md overflow-hidden border-t-4 border-celeste-500 hover:shadow-lg transition transform hover:-translate-y-1">
-                        <div class="p-8 text-center">
-                            <div class="text-celeste-500 text-4xl mb-4">
-                                <i class="fa-solid fa-building-columns"></i>
-                            </div>
-                            <h3 class="font-bold text-xl text-gray-800 mb-2">Transferencia Bancaria</h3>
-                            <p class="text-gray-500 text-sm mb-6">Aporta directo a nuestra cuenta, sin comisiones de tarjeta.</p>
+                    <!-- Tarjeta 1: Banco Industrial -->
+                    <div class="bg-white rounded-2xl shadow-md overflow-hidden border-t-4 border-blue-600 hover:shadow-xl transition transform hover:-translate-y-1 p-8 text-center flex flex-col items-center">
+                        <img src="bi.jpg" alt="Banco Industrial" class="w-24 h-24 object-cover rounded-2xl shadow-sm mb-5 border border-gray-100" onerror="this.src='https://via.placeholder.com/150/0033A0/FFFFFF?text=BI'">
+                        <h3 class="font-bold text-xl text-gray-800 mb-2">Banco Industrial</h3>
+                        <p class="text-gray-500 text-sm mb-6">Transferencia directa a nuestra cuenta BI.</p>
+                        
+                        <div class="bg-gray-50 w-full p-4 rounded-xl border border-gray-100 text-left mt-auto">
+                            <p class="text-xs text-gray-500 uppercase font-bold mb-1">Cuenta Monetaria / Ahorro</p>
+                            <p class="font-bold text-gray-800 mb-3 text-lg text-blue-700">000-000000-0</p>
                             
-                            <div class="bg-beige-50 p-4 rounded-lg text-left border border-gray-100">
-                                <p class="text-sm text-gray-500 uppercase tracking-wide font-semibold mb-1">Banco</p>
-                                <p class="font-bold text-gray-800 mb-3 text-lg">Banrural</p>
-
-                                <p class="text-sm text-gray-500 uppercase tracking-wide font-semibold mb-1">Cuenta de Ahorro</p>
-                                <p class="font-bold text-gray-800 mb-3 text-lg text-celeste-700">4321118366</p>
-                                
-                                <p class="text-sm text-gray-500 uppercase tracking-wide font-semibold mb-1">Nombre</p>
-                                <p class="font-bold text-gray-800">Legión de María Reina de Los Ángeles</p>
-                            </div>
+                            <p class="text-xs text-gray-500 uppercase font-bold mb-1">Nombre</p>
+                            <p class="font-bold text-gray-700 text-sm">Legión de María Reina de Los Ángeles</p>
                         </div>
                     </div>
 
-                    <!-- Tarjeta 2: Donación en Especie -->
-                    <div class="bg-white rounded-2xl shadow-md overflow-hidden border-t-4 border-beige-200 hover:shadow-lg transition transform hover:-translate-y-1">
-                        <div class="p-8 text-center">
-                            <div class="text-yellow-500 text-4xl mb-4">
-                                <i class="fa-solid fa-box-open"></i>
-                            </div>
-                            <h3 class="font-bold text-xl text-gray-800 mb-2">Donación en Especie</h3>
-                            <p class="text-gray-500 text-sm mb-6">Recibimos insumos para nuestras labores comunitarias.</p>
+                    <!-- Tarjeta 2: Banrural -->
+                    <div class="bg-white rounded-2xl shadow-md overflow-hidden border-t-4 border-green-600 hover:shadow-xl transition transform hover:-translate-y-1 p-8 text-center flex flex-col items-center">
+                        <img src="banrural.jpg" alt="Banrural" class="w-24 h-24 object-cover rounded-2xl shadow-sm mb-5 border border-gray-100" onerror="this.src='https://via.placeholder.com/150/007A3E/FFFFFF?text=Banrural'">
+                        <h3 class="font-bold text-xl text-gray-800 mb-2">Banrural</h3>
+                        <p class="text-gray-500 text-sm mb-6">Aporta fácil desde cualquier agencia Banrural.</p>
+                        
+                        <div class="bg-gray-50 w-full p-4 rounded-xl border border-gray-100 text-left mt-auto">
+                            <p class="text-xs text-gray-500 uppercase font-bold mb-1">Cuenta de Ahorro</p>
+                            <p class="font-bold text-gray-800 mb-3 text-lg text-green-700">4321118366</p>
                             
-                            <ul class="text-left text-gray-600 space-y-3 mb-6">
-                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-celeste-500"></i> Víveres no perecederos</li>
-                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-celeste-500"></i> Veladoras y flores</li>
-                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-celeste-500"></i> Material para evangelización</li>
-                            </ul>
-
-                            <a href="#nombre" onclick="document.getElementById('asunto').value='donacion';" class="block w-full bg-white text-celeste-700 border border-celeste-500 font-semibold py-2 rounded-lg hover:bg-celeste-50 transition">Coordinar entrega</a>
+                            <p class="text-xs text-gray-500 uppercase font-bold mb-1">Nombre</p>
+                            <p class="font-bold text-gray-700 text-sm">Legión de María Reina de Los Ángeles</p>
                         </div>
                     </div>
 
-                    <!-- Tarjeta 3: Ofrenda Presencial -->
-                    <div class="bg-white rounded-2xl shadow-md overflow-hidden border-t-4 border-celeste-700 hover:shadow-lg transition transform hover:-translate-y-1">
-                        <div class="p-8 text-center">
-                            <div class="text-celeste-700 text-4xl mb-4">
-                                <i class="fa-solid fa-church"></i>
-                            </div>
-                            <h3 class="font-bold text-xl text-gray-800 mb-2">Ofrenda Presencial</h3>
-                            <p class="text-gray-500 text-sm mb-6">Acércate a nuestras reuniones o a la parroquia.</p>
+                    <!-- Tarjeta 3: BAC -->
+                    <div class="bg-white rounded-2xl shadow-md overflow-hidden border-t-4 border-red-600 hover:shadow-xl transition transform hover:-translate-y-1 p-8 text-center flex flex-col items-center">
+                        <img src="bac.jpg" alt="BAC" class="w-24 h-24 object-cover rounded-2xl shadow-sm mb-5 border border-gray-100" onerror="this.src='https://via.placeholder.com/150/E3000F/FFFFFF?text=BAC'">
+                        <h3 class="font-bold text-xl text-gray-800 mb-2">BAC Credomatic</h3>
+                        <p class="text-gray-500 text-sm mb-6">Transferencia a nuestra cuenta BAC.</p>
+                        
+                        <div class="bg-gray-50 w-full p-4 rounded-xl border border-gray-100 text-left mt-auto">
+                            <p class="text-xs text-gray-500 uppercase font-bold mb-1">Cuenta Monetaria / Ahorro</p>
+                            <p class="font-bold text-gray-800 mb-3 text-lg text-red-700">000000000</p>
                             
-                            <div class="text-gray-600 mb-6">
-                                <p class="mb-2">Puedes entregar tu donativo directamente a nuestros oficiales durante las juntas semanales del Praesidium.</p>
-                                <p class="text-sm italic mt-4 text-gray-500">"Dios ama al dador alegre." - 2 Corintios 9:7</p>
-                            </div>
+                            <p class="text-xs text-gray-500 uppercase font-bold mb-1">Nombre</p>
+                            <p class="font-bold text-gray-700 text-sm">Legión de María Reina de Los Ángeles</p>
                         </div>
                     </div>
 
                 </div>
 
+                <div class="text-center mt-10">
+                    <p class="text-sm italic text-gray-500">"Cada uno dé como propuso en su corazón: no con tristeza, ni por necesidad, porque Dios ama al dador alegre." - 2 Corintios 9:7</p>
+                </div>
             </div>
         </section>
     </main>
@@ -368,11 +331,9 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <div class="col-span-1 md:col-span-2 text-center md:text-left">
                     <div class="flex items-center justify-center md:justify-start mb-4 cursor-pointer" onclick="window.location.href='index.html'">
-                        <!-- Logo Footer (logo1.jpg) -->
                         <img src="logo1.jpg"
                             class="h-10 w-10 md:h-12 md:w-12 rounded-full object-cover border-2 border-beige-100 shadow-sm mr-3 flex-shrink-0"
                             alt="Virgen Reina de Los Ángeles" onerror="this.src='https://via.placeholder.com/150/0EA5E9/FFFFFF?text=Logo'">
-
                         <span class="font-serif font-bold text-xl md:text-2xl">Reina de Los Ángeles</span>
                     </div>
                     <p class="text-celeste-100 text-sm max-w-sm mx-auto md:mx-0">
@@ -395,12 +356,10 @@
                             class="w-10 h-10 bg-celeste-500 rounded-full flex items-center justify-center hover:bg-white hover:text-celeste-700 transition">
                             <i class="fa-brands fa-facebook-f"></i>
                         </a>
-
                         <a href="#" target="_blank" rel="noopener noreferrer"
                             class="w-10 h-10 bg-celeste-500 rounded-full flex items-center justify-center hover:bg-white hover:text-celeste-700 transition">
                             <i class="fa-brands fa-instagram"></i>
                         </a>
-
                         <a href="#" target="_blank" rel="noopener noreferrer"
                             class="w-10 h-10 bg-celeste-500 rounded-full flex items-center justify-center hover:bg-white hover:text-celeste-700 transition">
                             <i class="fa-brands fa-whatsapp"></i>
@@ -415,95 +374,71 @@
     </footer>
 
     <script>
+        // Actualizar el año del footer
         document.getElementById('year').textContent = new Date().getFullYear();
+        
+        // Lógica del Menú Móvil
         const btn = document.getElementById('mobile-menu-button');
         const menu = document.getElementById('mobile-menu');
         btn.addEventListener('click', () => { menu.classList.toggle('hidden'); });
 
-        // --- LÓGICA DE DONACIÓN EN QUETZALES CON PAYPAL/TARJETA ---
-        let currentAmountGTQ = 0; // Monto inicia en 0
-        const exchangeRate = 7.80; // Tasa de cambio aproximada Q a $
-        const customAmountInput = document.getElementById('custom-amount');
-        const amountButtons = document.querySelectorAll('.amount-btn');
+        // --- LÓGICA DEL FORMULARIO CON GOOGLE APPS SCRIPT ---
+        
+        // ¡IMPORTANTE! Reemplaza esta URL con la URL de tu Web App de Google Apps Script
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbw4wKXuXCSZwS6PXmme59oMno8GCCz0lYIggHev9lXG2DTSxNrJpqcjljY1tWlmme3ZQg/exec'; 
+        
+        const form = document.getElementById('contactForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const btnIcon = document.getElementById('btnIcon');
+        const btnSpinner = document.getElementById('btnSpinner');
+        const formMessage = document.getElementById('formMessage');
 
-        // Función visual para seleccionar montos
-        function updateActiveButton(selectedBtn) {
-            amountButtons.forEach(btn => {
-                btn.classList.remove('bg-celeste-500', 'text-white', 'shadow-md');
-                btn.classList.add('bg-celeste-100', 'text-celeste-700');
-            });
-            if (selectedBtn) {
-                selectedBtn.classList.remove('bg-celeste-100', 'text-celeste-700');
-                selectedBtn.classList.add('bg-celeste-500', 'text-white', 'shadow-md');
-                customAmountInput.value = ''; 
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            
+            // Si la URL no se ha cambiado, dar un aviso al administrador
+            if(scriptURL === 'PEGAR_AQUI_LA_URL_DE_TU_WEB_APP'){
+                alert("Por favor, configura la URL de tu Google Apps Script en el archivo HTML.");
+                return;
             }
-        }
 
-        // Asignar monto desde los botones predeterminados
-        amountButtons.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                currentAmountGTQ = parseFloat(e.target.getAttribute('data-amount'));
-                updateActiveButton(e.target);
-            });
-        });
+            // Cambiar estado del botón a "Cargando"
+            btnText.textContent = 'Enviando...';
+            btnIcon.classList.add('hidden');
+            btnSpinner.classList.remove('hidden');
+            submitBtn.disabled = true;
+            formMessage.classList.add('hidden');
 
-        // Asignar monto personalizado
-        customAmountInput.addEventListener('input', (e) => {
-            const val = parseFloat(e.target.value);
-            if (val >= 0) {
-                currentAmountGTQ = val;
-                updateActiveButton(null);
-            } else if(e.target.value === '') {
-                currentAmountGTQ = 0;
-            }
-        });
-
-        // Renderizar los Botones Reales de PayPal
-        if(window.paypal) {
-            paypal.Buttons({
-                style: {
-                    color:  'blue',
-                    shape:  'pill',
-                    label:  'donate',
-                    layout: 'vertical'
-                },
-                createOrder: function(data, actions) {
-                    if (currentAmountGTQ <= 0) {
-                        alert("Por favor, selecciona o ingresa un monto mayor a 0 para poder procesar la donación.");
-                        throw new Error("Monto inválido"); // Detiene a PayPal si no hay monto
-                    }
-
-                    // Convertimos silenciosamente los GTQ a USD para PayPal
-                    let amountUSD = (currentAmountGTQ / exchangeRate).toFixed(2);
+            // Enviar datos vía AJAX a Google Script
+            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+                .then(response => {
+                    // Mostrar mensaje de éxito
+                    formMessage.classList.remove('hidden', 'bg-red-100', 'text-red-700');
+                    formMessage.classList.add('bg-green-100', 'text-green-700');
+                    formMessage.textContent = '¡Mensaje enviado con éxito! Nos pondremos en contacto pronto.';
+                    form.reset(); // Limpiar el formulario
+                })
+                .catch(error => {
+                    console.error('Error!', error.message);
+                    // Mostrar mensaje de error
+                    formMessage.classList.remove('hidden', 'bg-green-100', 'text-green-700');
+                    formMessage.classList.add('bg-red-100', 'text-red-700');
+                    formMessage.textContent = 'Hubo un error al enviar el mensaje. Revisa tu conexión y vuelve a intentarlo.';
+                })
+                .finally(() => {
+                    // Restaurar botón a estado original
+                    btnText.textContent = 'Enviar mensaje';
+                    btnIcon.classList.remove('hidden');
+                    btnSpinner.classList.add('hidden');
+                    submitBtn.disabled = false;
                     
-                    return actions.order.create({
-                        purchase_units: [{
-                            amount: {
-                                value: amountUSD,
-                                currency_code: 'USD'
-                            },
-                            description: `Donativo a Legión de María (Monto Original: Q${currentAmountGTQ})`
-                        }]
-                    });
-                },
-                onApprove: function(data, actions) {
-                    return actions.order.capture().then(function(details) {
-                        alert('¡Muchísimas gracias por tu apoyo, ' + details.payer.name.given_name + '! Tu donación fue exitosa.');
-                        // Limpiar formulario tras éxito
-                        customAmountInput.value = '';
-                        updateActiveButton(null);
-                        currentAmountGTQ = 0;
-                    });
-                },
-                onError: function (err) {
-                    console.error('Error procesando el pago de PayPal:', err);
-                    if(currentAmountGTQ > 0) {
-                        alert('Hubo un error al intentar procesar el pago o se canceló la ventana. Por favor intenta nuevamente.');
-                    }
-                }
-            }).render('#paypal-button-container');
-        }
-
+                    // Ocultar el mensaje después de 8 segundos
+                    setTimeout(() => {
+                        formMessage.classList.add('hidden');
+                    }, 8000);
+                });
+        });
     </script>
 </body>
 
