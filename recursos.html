@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recursos y Biblioteca - Reina de Los Ángeles</title>
+    <!-- Etiquetas SEO para Google -->
+<meta name="description" content="Sitio oficial del Praesidium Legión de María - Reina de Los Ángeles en Totonicapán. Conoce nuestras actividades, historia y cómo unirte a nuestra misión.">
+<meta name="keywords" content="Legión de María, Reina de Los Ángeles, Totonicapán, católico, virgen maría, iglesia, parroquia san miguel arcángel">
+<meta name="author" content="Legión de María - Reina de Los Ángeles">
+
+<!-- Etiquetas para que se vea bien al compartir en Facebook/WhatsApp (Open Graph) -->
+<meta property="og:title" content="Legión de María - Reina de Los Ángeles">
+<meta property="og:description" content="Praesidium de la Legión de María dedicado a la evangelización en Totonicapán.">
+<meta property="og:image" content="https://reinadelosangeles.github.io/web/logo1.jpg">
+<meta property="og:url" content="https://reinadelosangeles.github.io/web/">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        celeste: { 100: '#E0F2FE', 300: '#7DD3FC', 500: '#0EA5E9', 700: '#0369A1' },
+                        beige: { DEFAULT: '#FDFBF7', 100: '#FEF9C3', 200: '#FEF08A' }
+                    },
+                    fontFamily: {
+                        serif: ['Lora', 'serif'],
+                        sans: ['Nunito', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #0EA5E9;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        
+        .nav-link.active {
+            color: #0EA5E9;
+        }
+
+        .dropdown-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Animación para las tarjetas de recursos */
+        .resource-card {
+            transition: all 0.3s ease;
+        }
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.2);
+        }
+
+        /* Ocultar elementos filtrados */
+        .hidden-resource {
+            display: none !important;
+        }
+
+        /* Notificación Toast */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #0369A1;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            z-index: 100;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-size: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: opacity 0.3s, bottom 0.3s;
+        }
+
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 50px;
+        }
+    </style>
+</head>
+
+<body class="font-sans bg-beige text-gray-800 flex flex-col min-h-screen pt-20">
+
+    <!-- HEADER / NAVEGACIÓN -->
+    <header class="bg-white shadow-md fixed w-full top-0 z-50 border-b-4 border-celeste-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.location.href='index.html'">
+                    <img src="logo1.jpg" onerror="this.src='https://ui-avatars.com/api/?name=RL&background=0EA5E9&color=fff&rounded=true'"
+                        class="h-10 w-10 md:h-12 md:w-12 rounded-full object-cover border-2 border-celeste-500 shadow-sm mr-3 flex-shrink-0"
+                        alt="Virgen Reina de Los Ángeles">
+                    <div class="flex flex-col">
+                        <span class="font-serif font-bold text-lg sm:text-xl md:text-2xl text-celeste-700 leading-none">Reina de Los Ángeles</span>
+                        <span class="text-[10px] sm:text-xs md:text-sm text-gray-500 font-semibold tracking-wider">LEGIÓN DE MARÍA</span>
+                    </div>
+                </div>
+
+                <nav class="hidden md:flex space-x-6 items-center">
+                    <a href="index.html" class="text-gray-700 hover:text-celeste-500 font-semibold nav-link">Inicio</a>
+                    <div class="relative dropdown py-4">
+                        <button class="text-gray-700 hover:text-celeste-500 font-semibold flex items-center gap-1 nav-link">
+                            Nuestra Legión <i class="fa-solid fa-chevron-down text-xs"></i>
+                        </button>
+                        <div class="dropdown-content absolute left-0 mt-4 w-48 bg-white rounded-md shadow-lg py-2 border border-beige-100">
+                            <a href="sobre-nosotros.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-beige-100 hover:text-celeste-700">Sobre nosotros</a>
+                            <a href="historia.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-beige-100 hover:text-celeste-700">Nuestra Historia</a>
+                        </div>
+                    </div>
+                    <a href="actividades.html" class="text-gray-700 hover:text-celeste-500 font-semibold nav-link">Actividades</a>
+                    <a href="tradiciones.html" class="text-gray-700 hover:text-celeste-500 font-semibold nav-link">Tradiciones</a>
+                    <a href="recursos.html" class="text-gray-700 hover:text-celeste-500 font-semibold nav-link active">Recursos</a>
+                    <a href="galeria.html" class="text-gray-700 hover:text-celeste-500 font-semibold nav-link">Galería</a>
+                    <a href="noticias.html" class="text-gray-700 hover:text-celeste-500 font-semibold nav-link">Noticias</a>
+                    <a href="contacto.html" class="bg-celeste-500 text-white px-5 py-2 rounded-full font-semibold hover:bg-celeste-700 transition shadow-md">Contacto</a>
+                </nav>
+
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="text-celeste-700 hover:text-celeste-500 focus:outline-none p-2">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menú Móvil -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 absolute w-full left-0 shadow-lg">
+            <div class="px-2 pt-2 pb-4 space-y-1 sm:px-3">
+                <a href="index.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-celeste-500 hover:bg-beige-100 rounded-md">Inicio</a>
+                <a href="sobre-nosotros.html" class="block px-3 py-2 text-base font-medium text-gray-600 hover:text-celeste-500 hover:bg-beige-100 rounded-md">Sobre nosotros</a>
+                <a href="historia.html" class="block px-3 py-2 text-base font-medium text-gray-600 hover:text-celeste-500 hover:bg-beige-100 rounded-md">Historia</a>
+                <a href="actividades.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-celeste-500 hover:bg-beige-100 rounded-md">Actividades</a>
+                <a href="tradiciones.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-celeste-500 hover:bg-beige-100 rounded-md">Tradiciones</a>
+                <!-- Corrección aquí: Se cambió bg-celeste-50 a bg-celeste-100 -->
+                <a href="recursos.html" class="block px-3 py-2 text-base font-medium text-celeste-700 bg-celeste-100 rounded-md">Recursos</a>
+                <a href="galeria.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-celeste-500 hover:bg-beige-100 rounded-md">Galería</a>
+                <a href="noticias.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-celeste-500 hover:bg-beige-100 rounded-md">Noticias</a>
+                <a href="contacto.html" class="block px-3 py-2 text-base font-medium text-celeste-700 bg-celeste-100 hover:bg-celeste-300 rounded-md mt-4 text-center">Contacto</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        
+        <!-- Encabezado de la página (Corrección: bg-celeste-50 cambiado a bg-celeste-100) -->
+        <section class="bg-celeste-100 py-12 md:py-20 border-b border-celeste-300">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <span class="text-celeste-700 font-bold tracking-widest uppercase text-sm mb-2 block">Biblioteca Legionaria</span>
+                <h1 class="text-4xl md:text-5xl font-serif font-bold text-celeste-700 mb-6 drop-shadow-sm">Recursos y Materiales</h1>
+                <p class="text-gray-700 max-w-2xl mx-auto text-lg">
+                    Descarga manuales, oraciones, guías y documentos de formación para fortalecer tu servicio y devoción dentro de la Legión de María.
+                </p>
+            </div>
+        </section>
+
+        <!-- Contenido de Biblioteca -->
+        <section class="py-12 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <!-- Barra de búsqueda y Filtros -->
+                <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+                    
+                    <!-- Filtros (Pestañas) -->
+                    <div class="flex flex-wrap justify-center gap-2" id="filter-buttons">
+                        <button class="filter-btn active bg-celeste-500 text-white px-5 py-2 rounded-full font-semibold text-sm transition shadow-sm" data-filter="all">Todos</button>
+                        <button class="filter-btn bg-beige-100 text-gray-600 hover:bg-celeste-100 hover:text-celeste-700 px-5 py-2 rounded-full font-semibold text-sm transition" data-filter="manuales">Manuales</button>
+                        <button class="filter-btn bg-beige-100 text-gray-600 hover:bg-celeste-100 hover:text-celeste-700 px-5 py-2 rounded-full font-semibold text-sm transition" data-filter="oraciones">Oraciones</button>
+                        <button class="filter-btn bg-beige-100 text-gray-600 hover:bg-celeste-100 hover:text-celeste-700 px-5 py-2 rounded-full font-semibold text-sm transition" data-filter="formacion">Formación</button>
+                    </div>
+
+                    <!-- Buscador -->
+                    <div class="relative w-full md:w-72">
+                        <input type="text" id="search-input" placeholder="Buscar recurso..." 
+                            class="w-full pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:border-celeste-500 focus:ring-2 focus:ring-celeste-300 transition bg-beige-100">
+                        <i class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                </div>
+
+                <!-- Cuadrícula de Recursos -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="resources-grid">
+                    
+                    <!-- Tarjeta 1 -->
+                    <div class="resource-card bg-white border border-gray-100 rounded-2xl p-6 shadow-sm flex flex-col" data-category="manuales" data-title="manual oficial de la legion de maria">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-12 h-12 bg-red-100 text-red-600 rounded-lg flex items-center justify-center text-2xl">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </div>
+                            <span class="bg-celeste-100 text-celeste-700 text-xs font-bold px-3 py-1 rounded-full">Manual</span>
+                        </div>
+                        <h3 class="font-serif font-bold text-xl text-gray-800 mb-2">Manual Oficial</h3>
+                        <p class="text-gray-500 text-sm mb-6 flex-grow">
+                            El manual completo de la Legión de María con reglas, historia y sistema operativo de nuestra organización.
+                        </p>
+                        <button onclick="downloadMockFile('Manual_Legion_de_Maria.txt', 'manual')" class="w-full bg-beige-100 hover:bg-celeste-500 hover:text-white text-celeste-700 font-semibold py-2.5 rounded-xl transition flex items-center justify-center gap-2 group">
+                            <i class="fa-solid fa-download group-hover:-translate-y-1 transition transform"></i> Descargar (2.4 MB)
+                        </button>
+                    </div>
+
+                    <!-- Tarjeta 2 -->
+                    <div class="resource-card bg-white border border-gray-100 rounded-2xl p-6 shadow-sm flex flex-col" data-category="oraciones" data-title="la tessera oraciones catena legionis">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-2xl">
+                                <i class="fa-solid fa-file-image"></i>
+                            </div>
+                            <span class="bg-beige-200 text-gray-700 text-xs font-bold px-3 py-1 rounded-full">Oraciones</span>
+                        </div>
+                        <h3 class="font-serif font-bold text-xl text-gray-800 mb-2">La Téssera</h3>
+                        <p class="text-gray-500 text-sm mb-6 flex-grow">
+                            Hoja que contiene las oraciones de la Legión de María y una reproducción del cuadro de la Legión.
+                        </p>
+                        <button onclick="downloadMockFile('La_Tessera_Oraciones.txt', 'tessera')" class="w-full bg-beige-100 hover:bg-celeste-500 hover:text-white text-celeste-700 font-semibold py-2.5 rounded-xl transition flex items-center justify-center gap-2 group">
+                            <i class="fa-solid fa-download group-hover:-translate-y-1 transition transform"></i> Descargar (1.1 MB)
+                        </button>
+                    </div>
+
+                    <!-- Tarjeta 3 -->
+                    <div class="resource-card bg-white border border-gray-100 rounded-2xl p-6 shadow-sm flex flex-col" data-category="formacion" data-title="guia para oficiales presidente secretario tesorero">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-12 h-12 bg-red-100 text-red-600 rounded-lg flex items-center justify-center text-2xl">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </div>
+                            <span class="bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full">Formación</span>
+                        </div>
+                        <h3 class="font-serif font-bold text-xl text-gray-800 mb-2">Guía para Oficiales</h3>
+                        <p class="text-gray-500 text-sm mb-6 flex-grow">
+                            Documento formativo con las responsabilidades y deberes de la directiva (Presidente, Vicepresidente, Secretario, Tesorero).
+                        </p>
+                        <button onclick="downloadMockFile('Guia_Oficiales_Praesidium.txt', 'guia')" class="w-full bg-beige-100 hover:bg-celeste-500 hover:text-white text-celeste-700 font-semibold py-2.5 rounded-xl transition flex items-center justify-center gap-2 group">
+                            <i class="fa-solid fa-download group-hover:-translate-y-1 transition transform"></i> Descargar (850 KB)
+                        </button>
+                    </div>
+
+                    <!-- Tarjeta 4 -->
+                    <div class="resource-card bg-white border border-gray-100 rounded-2xl p-6 shadow-sm flex flex-col" data-category="oraciones" data-title="santo rosario meditado misterios">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-12 h-12 bg-blue-100 text-blue-800 rounded-lg flex items-center justify-center text-2xl">
+                                <i class="fa-solid fa-file-word"></i>
+                            </div>
+                            <span class="bg-beige-200 text-gray-700 text-xs font-bold px-3 py-1 rounded-full">Oraciones</span>
+                        </div>
+                        <h3 class="font-serif font-bold text-xl text-gray-800 mb-2">Santo Rosario Meditado</h3>
+                        <p class="text-gray-500 text-sm mb-6 flex-grow">
+                            Guía para rezar el Santo Rosario con meditaciones legionarías para cada uno de los misterios.
+                        </p>
+                        <button onclick="downloadMockFile('Santo_Rosario_Meditado.txt', 'rosario')" class="w-full bg-beige-100 hover:bg-celeste-500 hover:text-white text-celeste-700 font-semibold py-2.5 rounded-xl transition flex items-center justify-center gap-2 group">
+                            <i class="fa-solid fa-download group-hover:-translate-y-1 transition transform"></i> Descargar (500 KB)
+                        </button>
+                    </div>
+
+                    <!-- Tarjeta 5 -->
+                    <div class="resource-card bg-white border border-gray-100 rounded-2xl p-6 shadow-sm flex flex-col" data-category="formacion" data-title="estudio patriciano acta junta">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-12 h-12 bg-red-100 text-red-600 rounded-lg flex items-center justify-center text-2xl">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </div>
+                            <span class="bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full">Formación</span>
+                        </div>
+                        <h3 class="font-serif font-bold text-xl text-gray-800 mb-2">Materiales para Patricianos</h3>
+                        <p class="text-gray-500 text-sm mb-6 flex-grow">
+                            Temas sugeridos y estructura para dirigir las reuniones del grupo de Patricianos en la parroquia.
+                        </p>
+                        <button onclick="downloadMockFile('Material_Patricianos.txt', 'patricianos')" class="w-full bg-beige-100 hover:bg-celeste-500 hover:text-white text-celeste-700 font-semibold py-2.5 rounded-xl transition flex items-center justify-center gap-2 group">
+                            <i class="fa-solid fa-download group-hover:-translate-y-1 transition transform"></i> Descargar (1.2 MB)
+                        </button>
+                    </div>
+
+                    <!-- Tarjeta 6 -->
+                    <div class="resource-card bg-white border border-gray-100 rounded-2xl p-6 shadow-sm flex flex-col" data-category="manuales" data-title="hoja de trabajo reporte semanal">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-12 h-12 bg-green-100 text-green-600 rounded-lg flex items-center justify-center text-2xl">
+                                <i class="fa-solid fa-file-excel"></i>
+                            </div>
+                            <span class="bg-celeste-100 text-celeste-700 text-xs font-bold px-3 py-1 rounded-full">Manual</span>
+                        </div>
+                        <h3 class="font-serif font-bold text-xl text-gray-800 mb-2">Plantilla de Reporte Semanal</h3>
+                        <p class="text-gray-500 text-sm mb-6 flex-grow">
+                            Formato estándar para que los socios activos presenten sus informes de trabajo en la junta semanal.
+                        </p>
+                        <button onclick="downloadMockFile('Plantilla_Reporte_Semanal.txt', 'plantilla')" class="w-full bg-beige-100 hover:bg-celeste-500 hover:text-white text-celeste-700 font-semibold py-2.5 rounded-xl transition flex items-center justify-center gap-2 group">
+                            <i class="fa-solid fa-download group-hover:-translate-y-1 transition transform"></i> Descargar (200 KB)
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Mensaje sin resultados -->
+                <div id="no-results" class="hidden text-center py-12">
+                    <i class="fa-solid fa-folder-open text-6xl text-gray-300 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-600">No se encontraron recursos</h3>
+                    <p class="text-gray-500">Intenta buscar con otros términos o cambia de categoría.</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Sección de Invitación (Call to Action) -->
+        <section class="bg-celeste-700 py-16 text-center text-white">
+            <div class="max-w-4xl mx-auto px-4">
+                <i class="fa-solid fa-book-open text-5xl text-celeste-300 mb-6"></i>
+                <h2 class="text-3xl font-serif font-bold mb-4">¿Buscas algún material específico?</h2>
+                <p class="text-celeste-100 text-lg mb-8">
+                    Si eres miembro de nuestro Praesidium y necesitas acceso a actas, registros privados u otros documentos de uso interno, comunícate con la directiva.
+                </p>
+                <a href="contacto.html" class="inline-block bg-white text-celeste-700 px-8 py-3 rounded-full font-bold text-lg hover:bg-beige-100 transition shadow-lg transform hover:-translate-y-1">
+                    Contactar a la Directiva
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER (Corregido para coincidir con index.html) -->
+    <footer class="bg-celeste-700 text-white pt-12 pb-6 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div class="col-span-1 md:col-span-2 text-center md:text-left">
+                    <div class="flex items-center justify-center md:justify-start mb-4 cursor-pointer" onclick="window.location.href='index.html'">
+                        <img src="logo1.jpg" onerror="this.src='https://ui-avatars.com/api/?name=RL&background=0EA5E9&color=fff&rounded=true'"
+                            class="h-10 w-10 md:h-12 md:w-12 rounded-full object-cover border-2 border-beige-100 shadow-sm mr-3 flex-shrink-0"
+                            alt="Virgen Reina de Los Ángeles">
+                        <span class="font-serif font-bold text-xl md:text-2xl">Reina de Los Ángeles</span>
+                    </div>
+                    <p class="text-celeste-100 text-sm max-w-sm mx-auto md:mx-0">
+                        Praesidium de la Legión de María dedicado a la evangelización y servicio comunitario bajo la
+                        protección de nuestra Madre Celestial.
+                    </p>
+                </div>
+                <div class="text-center md:text-left">
+                    <h4 class="font-bold text-lg mb-4 text-beige-100 border-b border-celeste-500 pb-2 inline-block">Enlaces Rápidos</h4>
+                    <ul class="space-y-2 text-sm text-celeste-100">
+                        <li><a href="index.html" class="hover:text-white transition">Inicio</a></li>
+                        <li><a href="sobre-nosotros.html" class="hover:text-white transition">Sobre Nosotros</a></li>
+                        <li><a href="actividades.html" class="hover:text-white transition">Actividades</a></li>
+                        <li><a href="recursos.html" class="hover:text-white transition font-semibold text-white">Recursos</a></li>
+                    </ul>
+                </div>
+                <div class="text-center md:text-left">
+                    <h4 class="font-bold text-lg mb-4 text-beige-100 border-b border-celeste-500 pb-2 inline-block">Síguenos</h4>
+                    <div class="flex justify-center md:justify-start space-x-4">
+                        <a href="https://www.facebook.com/profile.php?id=100069853659199" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-celeste-500 rounded-full flex items-center justify-center hover:bg-white hover:text-celeste-700 transition">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="https://www.instagram.com/reinadelosangeles07" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-celeste-500 rounded-full flex items-center justify-center hover:bg-white hover:text-celeste-700 transition">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="https://wa.me/50232380356" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-celeste-500 rounded-full flex items-center justify-center hover:bg-white hover:text-celeste-700 transition">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-celeste-500 pt-6 text-center text-sm text-celeste-200">
+                <p>&copy; <span id="year"></span> Legión de María - Reina de Los Ángeles. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Elemento para notificaciones flotantes (Toast) -->
+    <div id="toast"><i class="fa-solid fa-check-circle mr-2"></i> Descarga iniciada correctamente</div>
+
+    <script>
+        // Actualizar año en el footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+        
+        // Menú móvil
+        const btn = document.getElementById('mobile-menu-button');
+        const menu = document.getElementById('mobile-menu');
+        btn.addEventListener('click', () => { menu.classList.toggle('hidden'); });
+
+        // SISTEMA DE FILTRADO Y BÚSQUEDA
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const searchInput = document.getElementById('search-input');
+        const resourceCards = document.querySelectorAll('.resource-card');
+        const noResults = document.getElementById('no-results');
+
+        // Función principal para aplicar filtros y búsqueda
+        function filterResources() {
+            const activeFilter = document.querySelector('.filter-btn.active').getAttribute('data-filter');
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            let visibleCount = 0;
+
+            resourceCards.forEach(card => {
+                const category = card.getAttribute('data-category');
+                const titleText = card.getAttribute('data-title');
+                
+                const matchesFilter = activeFilter === 'all' || category === activeFilter;
+                const matchesSearch = titleText.includes(searchTerm);
+
+                if (matchesFilter && matchesSearch) {
+                    card.classList.remove('hidden-resource');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden-resource');
+                }
+            });
+
+            // Mostrar/ocultar mensaje de "No se encontraron recursos"
+            if (visibleCount === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+            }
+        }
+
+        // Eventos para botones de filtro
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Actualizar estilos de los botones
+                filterBtns.forEach(b => {
+                    b.classList.remove('active', 'bg-celeste-500', 'text-white', 'shadow-sm');
+                    b.classList.add('bg-beige-100', 'text-gray-600');
+                });
+                btn.classList.remove('bg-beige-100', 'text-gray-600');
+                btn.classList.add('active', 'bg-celeste-500', 'text-white', 'shadow-sm');
+                
+                filterResources();
+            });
+        });
+
+        // Evento para el buscador
+        searchInput.addEventListener('input', filterResources);
+
+
+        // SISTEMA DE DESCARGA SIMULADA (PERO FUNCIONAL)
+        
+        // Base de datos simulada con el contenido de los archivos de texto
+        const fileContents = {
+            'manual': "MANUAL DE LA LEGIÓN DE MARÍA\n\nCapítulo 1: Nombre y Origen\nLa Legión de María es una asociación de católicos que, con la aprobación eclesiástica, han formado un ejército para servir en la guerra, perpetuamente entablada por la Iglesia contra el mundo y sus malas potencias.\n\n",
+            
+            'tessera': "LA TÉSSERA - LEGIÓN DE MARÍA\n\nORACIONES DE LA LEGIÓN DE MARÍA\n\n1. En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén.\n2. Ven Espíritu Santo, llena los corazones de tus fieles y enciende en ellos el fuego de tu amor.\n3. V. Envía tu Espíritu y todo será creado.\n4. R. Y renovarás la faz de la tierra.\n\n",
+            
+            'guia': "GUÍA PARA OFICIALES DEL PRAESIDIUM\n\nDeberes del Presidente:\n1. Asistir a la junta del Curia.\n2. Presidir la junta semanal del Praesidium.\n3. Distribuir el trabajo a los socios activos.\n\nDeberes del Vicepresidente:\n1. Llevar el registro de asistencia.\n2. Sustituir al Presidente en su ausencia.\n\n",
+            
+            'rosario': "SANTO ROSARIO MEDITADO\n\nMISTERIOS GOZOSOS (Lunes y Sábado)\n1. La Anunciación del Ángel a María.\nMeditación: Pidamos la humildad de María para aceptar la voluntad de Dios en nuestro trabajo legionario.\n\n",
+            
+            'patricianos': "GUÍA PARA REUNIONES DE PATRICIANOS\n\nEstructura de la reunión (Duración: 2 horas):\n1. Oración inicial (Téssera).\n2. Charla laica (15 min).\n3. Discusión abierta (40 min).\n4. Refrigerio (15 min).\n5. Charla del Director Espiritual (15 min).\n6. Continuación de la discusión (30 min).\n7. Oración final.\n\n",
+            
+            'plantilla': "REPORTE SEMANAL DE TRABAJO LEGIONARIO\n\nNombre del Socio:\nFecha:\nTrabajo Asignado:\nHoras dedicadas:\nPersonas contactadas:\n\nBreve descripción del trabajo realizado:\n-------------------------------------------------\n-------------------------------------------------\n\n",
+        };
+
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            toast.innerHTML = `<i class="fa-solid fa-check-circle mr-2"></i> ${message}`;
+            toast.className = "show";
+            setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+
+        function downloadMockFile(filename, fileKey) {
+            // Mostrar notificación
+            showToast(`Descargando ${filename}...`);
+
+            // Obtener el contenido basado en la clave, o poner un texto por defecto
+            const content = fileContents[fileKey] || "Contenido del archivo no encontrado.";
+
+            // Crear un objeto Blob con el contenido (asegurando la codificación UTF-8 para acentos)
+            const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), content], { type: "text/plain;charset=utf-8" });
+            
+            // Crear una URL temporal para el Blob
+            const url = window.URL.createObjectURL(blob);
+            
+            // Crear un elemento <a> invisible y simular un clic
+            const a = document.createElement("a");
+            a.style.display = "none";
+            a.href = url;
+            a.download = filename; // El nombre con el que se guardará el archivo en la PC/móvil
+            
+            document.body.appendChild(a);
+            
+            // Pequeño retraso para que se vea el toast
+            setTimeout(() => {
+                a.click();
+                
+                // Limpiar la memoria
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            }, 500);
+        }
+
+        // --- Bloqueo de Inspección y Clic Derecho ---
+        
+        // Deshabilitar clic derecho
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // Deshabilitar atajos de teclado (F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, etc.)
+        document.onkeydown = function(e) {
+            // F12
+            if (e.keyCode === 123) {
+                return false;
+            }
+            // Ctrl+Shift+I
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
+                return false;
+            }
+            // Ctrl+Shift+J
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 74) {
+                return false;
+            }
+            // Ctrl+Shift+C
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 67) {
+                return false;
+            }
+            // Ctrl+U (Ver código fuente)
+            if (e.ctrlKey && e.keyCode === 85) {
+                return false;
+            }
+        };
+    </script>
+</body>
+
+</html>
