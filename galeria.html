@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galería - Reina de Los Ángeles</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        celeste: { 100: '#E0F2FE', 300: '#7DD3FC', 500: '#0EA5E9', 700: '#0369A1' },
+                        beige: { DEFAULT: '#FDFBF7', 100: '#FEF9C3', 200: '#FEF08A' }
+                    },
+                    fontFamily: {
+                        serif: ['Lora', 'serif'],
+                        sans: ['Nunito', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #0EA5E9;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        
+        .nav-link.active {
+            color: #0EA5E9;
+        }
+
+        .dropdown-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Modal Lightbox */
+        #lightbox {
+            backdrop-filter: blur(5px);
+            transition: opacity 0.3s ease;
+        }
+        
+        .gallery-image {
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        
+        .gallery-image:hover {
+            transform: scale(1.03);
+            box-shadow: 0 15px 30px -10px rgba(14, 165, 233, 0.3);
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<body class="font-sans bg-beige text-gray-800 flex flex-col min-h-screen pt-20">
+
+    <!-- HEADER / NAVEGACIÓN -->
+    <header class="bg-white shadow-md fixed w-full top-0 z-50 border-b-4 border-celeste-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.location.href='index.html'">
+                    <img src="logo1.jpg" onerror="this.src='https://ui-avatars.com/api/?name=RL&background=0EA5E9&color=fff&rounded=true'"
+                        class="h-10 w-10 md:h-12 md:w-12 rounded-full object-cover border-2 border-celeste-500 shadow-sm mr-3 flex-shrink-0"
+                        alt="Virgen Reina de Los Ángeles">
+                    <div class="flex flex-col">
+                        <span class="font-serif font-bold text-lg sm:text-xl md:text-2xl text-celeste-700 leading-none">Reina de Los Ángeles</span>
+                        <span class="text-[10px] sm:text-xs md:text-sm text-gray-500 font-semibold tracking-wider">LEGIÓN DE MARÍA</span>
+                    </div>
+                </div>
+
+                <nav class="hidden md:flex space-x-6 items-center">
+                    <a href="index.html" class="text-gray-700 hover:text-celeste-500 font-semibold nav-link">Inicio</a>
+                    <div class="relative dropdown py-4">
+                        <button class="text-gray-700 hover:text-celeste-500 font-semibold flex items-center gap-1 nav-link">
+                            Nuestra Legión <i class="fa-solid fa-chevron-down text-xs"></i>
+                        </button>
+                        <div class="dropdown-content absolute left-0 mt-4 w-48 bg-white rounded-md shadow-lg py-2 border border-beige-100">
+                            <a href="sobre-nosotros.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-beige-100 hover:text-celeste-700">Sobre nosotros</a>
+                            <a href="historia.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-beige-100 hover:text-celeste-700">Nuestra Historia</a>
+                        </div>
+                    </div>
+                    <a href="actividades.html" class="text-gray-700 hover:text-celeste-500 font-semibold nav-link">Actividades</a>
+                    <a href="tradiciones.html" class="text-gray-700 hover:text-celeste-500 font-semibold nav-link">Tradiciones</a>
+                    <a href="recursos.html" class="text-gray-700 hover:text-celeste-500 font-semibold nav-link">Recursos</a>
+                    <a href="galeria.html" class="text-gray-700 hover:text-celeste-500 font-semibold nav-link active">Galería</a>
+                    <a href="noticias.html" class="text-gray-700 hover:text-celeste-500 font-semibold nav-link">Noticias</a>
+                    <a href="contacto.html" class="bg-celeste-500 text-white px-5 py-2 rounded-full font-semibold hover:bg-celeste-700 transition shadow-md">Contacto</a>
+                </nav>
+
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="text-celeste-700 hover:text-celeste-500 focus:outline-none p-2">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menú Móvil -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 absolute w-full left-0 shadow-lg">
+            <div class="px-2 pt-2 pb-4 space-y-1 sm:px-3">
+                <a href="index.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-celeste-500 hover:bg-beige-100 rounded-md">Inicio</a>
+                <a href="sobre-nosotros.html" class="block px-3 py-2 text-base font-medium text-gray-600 hover:text-celeste-500 hover:bg-beige-100 rounded-md">Sobre nosotros</a>
+                <a href="historia.html" class="block px-3 py-2 text-base font-medium text-gray-600 hover:text-celeste-500 hover:bg-beige-100 rounded-md">Historia</a>
+                <a href="actividades.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-celeste-500 hover:bg-beige-100 rounded-md">Actividades</a>
+                <a href="tradiciones.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-celeste-500 hover:bg-beige-100 rounded-md">Tradiciones</a>
+                <a href="recursos.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-celeste-500 hover:bg-beige-100 rounded-md">Recursos</a>
+                <a href="galeria.html" class="block px-3 py-2 text-base font-medium text-celeste-700 bg-celeste-100 rounded-md">Galería</a>
+                <a href="noticias.html" class="block px-3 py-2 text-base font-medium text-gray-700 hover:text-celeste-500 hover:bg-beige-100 rounded-md">Noticias</a>
+                <a href="contacto.html" class="block px-3 py-2 text-base font-medium text-celeste-700 bg-celeste-100 hover:bg-celeste-300 rounded-md mt-4 text-center">Contacto</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        
+        <!-- Encabezado de la página -->
+        <section class="bg-celeste-100 py-12 md:py-20 border-b border-celeste-300">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <span class="text-celeste-700 font-bold tracking-widest uppercase text-sm mb-2 block">Nuestros Recuerdos</span>
+                <h1 class="text-4xl md:text-5xl font-serif font-bold text-celeste-700 mb-6 drop-shadow-sm">Galería Fotográfica</h1>
+                <p class="text-gray-700 max-w-2xl mx-auto text-lg">
+                    Explora los momentos compartidos en nuestra labor legionaria, eventos especiales, reuniones y servicio a la comunidad de Totonicapán.
+                </p>
+            </div>
+        </section>
+
+        <!-- Contenido de la Galería -->
+        <section class="py-12 bg-white min-h-[50vh]">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <!-- Cuadrícula de Fotos -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                    
+                    <!-- Espacio para Foto 1 -->
+                    <div class="relative group overflow-hidden rounded-xl shadow-sm cursor-pointer gallery-image aspect-square bg-gray-200 flex items-center justify-center" onclick="openLightbox('foto1.jpg')">
+                        <i class="fa-regular fa-image text-4xl text-gray-300 absolute z-0"></i>
+                        <img src="foto1.jpg" onerror="this.style.opacity='0'" alt="Foto 1" class="w-full h-full object-cover relative z-10">
+                        <div class="absolute inset-0 bg-celeste-700 bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center z-20">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300"></i>
+                        </div>
+                    </div>
+
+                    <!-- Espacio para Foto 2 -->
+                    <div class="relative group overflow-hidden rounded-xl shadow-sm cursor-pointer gallery-image aspect-square bg-gray-200 flex items-center justify-center" onclick="openLightbox('foto2.jpg')">
+                        <i class="fa-regular fa-image text-4xl text-gray-300 absolute z-0"></i>
+                        <img src="foto2.jpg" onerror="this.style.opacity='0'" alt="Foto 2" class="w-full h-full object-cover relative z-10">
+                        <div class="absolute inset-0 bg-celeste-700 bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center z-20">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300"></i>
+                        </div>
+                    </div>
+
+                    <!-- Espacio para Foto 3 -->
+                    <div class="relative group overflow-hidden rounded-xl shadow-sm cursor-pointer gallery-image aspect-square bg-gray-200 flex items-center justify-center" onclick="openLightbox('foto3.jpg')">
+                        <i class="fa-regular fa-image text-4xl text-gray-300 absolute z-0"></i>
+                        <img src="foto3.jpg" onerror="this.style.opacity='0'" alt="Foto 3" class="w-full h-full object-cover relative z-10">
+                        <div class="absolute inset-0 bg-celeste-700 bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center z-20">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300"></i>
+                        </div>
+                    </div>
+
+                    <!-- Espacio para Foto 4 -->
+                    <div class="relative group overflow-hidden rounded-xl shadow-sm cursor-pointer gallery-image aspect-square bg-gray-200 flex items-center justify-center" onclick="openLightbox('foto4.jpg')">
+                        <i class="fa-regular fa-image text-4xl text-gray-300 absolute z-0"></i>
+                        <img src="foto4.jpg" onerror="this.style.opacity='0'" alt="Foto 4" class="w-full h-full object-cover relative z-10">
+                        <div class="absolute inset-0 bg-celeste-700 bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center z-20">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300"></i>
+                        </div>
+                    </div>
+
+                    <!-- Espacio para Foto 5 -->
+                    <div class="relative group overflow-hidden rounded-xl shadow-sm cursor-pointer gallery-image aspect-square bg-gray-200 flex items-center justify-center" onclick="openLightbox('foto5.jpg')">
+                        <i class="fa-regular fa-image text-4xl text-gray-300 absolute z-0"></i>
+                        <img src="foto5.jpg" onerror="this.style.opacity='0'" alt="Foto 5" class="w-full h-full object-cover relative z-10">
+                        <div class="absolute inset-0 bg-celeste-700 bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center z-20">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300"></i>
+                        </div>
+                    </div>
+
+                    <!-- Espacio para Foto 6 -->
+                    <div class="relative group overflow-hidden rounded-xl shadow-sm cursor-pointer gallery-image aspect-square bg-gray-200 flex items-center justify-center" onclick="openLightbox('foto6.jpg')">
+                        <i class="fa-regular fa-image text-4xl text-gray-300 absolute z-0"></i>
+                        <img src="foto6.jpg" onerror="this.style.opacity='0'" alt="Foto 6" class="w-full h-full object-cover relative z-10">
+                        <div class="absolute inset-0 bg-celeste-700 bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center z-20">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300"></i>
+                        </div>
+                    </div>
+
+                    <!-- Espacio para Foto 7 -->
+                    <div class="relative group overflow-hidden rounded-xl shadow-sm cursor-pointer gallery-image aspect-square bg-gray-200 flex items-center justify-center" onclick="openLightbox('foto7.jpg')">
+                        <i class="fa-regular fa-image text-4xl text-gray-300 absolute z-0"></i>
+                        <img src="foto7.jpg" onerror="this.style.opacity='0'" alt="Foto 7" class="w-full h-full object-cover relative z-10">
+                        <div class="absolute inset-0 bg-celeste-700 bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center z-20">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300"></i>
+                        </div>
+                    </div>
+
+                    <!-- Espacio para Foto 8 -->
+                    <div class="relative group overflow-hidden rounded-xl shadow-sm cursor-pointer gallery-image aspect-square bg-gray-200 flex items-center justify-center" onclick="openLightbox('foto8.jpg')">
+                        <i class="fa-regular fa-image text-4xl text-gray-300 absolute z-0"></i>
+                        <img src="foto8.jpg" onerror="this.style.opacity='0'" alt="Foto 8" class="w-full h-full object-cover relative z-10">
+                        <div class="absolute inset-0 bg-celeste-700 bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center z-20">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300"></i>
+                        </div>
+                    </div>
+
+                    <!-- Espacio para Foto 9 -->
+                    <div class="relative group overflow-hidden rounded-xl shadow-sm cursor-pointer gallery-image aspect-square bg-gray-200 flex items-center justify-center" onclick="openLightbox('foto9.jpg')">
+                        <i class="fa-regular fa-image text-4xl text-gray-300 absolute z-0"></i>
+                        <img src="foto9.jpg" onerror="this.style.opacity='0'" alt="Foto 9" class="w-full h-full object-cover relative z-10">
+                        <div class="absolute inset-0 bg-celeste-700 bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center z-20">
+                            <i class="fa-solid fa-magnifying-glass-plus text-white text-3xl opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-celeste-700 text-white pt-12 pb-6 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div class="col-span-1 md:col-span-2 text-center md:text-left">
+                    <div class="flex items-center justify-center md:justify-start mb-4 cursor-pointer" onclick="window.location.href='index.html'">
+                        <img src="logo1.jpg" onerror="this.src='https://ui-avatars.com/api/?name=RL&background=0EA5E9&color=fff&rounded=true'"
+                            class="h-10 w-10 md:h-12 md:w-12 rounded-full object-cover border-2 border-beige-100 shadow-sm mr-3 flex-shrink-0"
+                            alt="Virgen Reina de Los Ángeles">
+                        <span class="font-serif font-bold text-xl md:text-2xl">Reina de Los Ángeles</span>
+                    </div>
+                    <p class="text-celeste-100 text-sm max-w-sm mx-auto md:mx-0">
+                        Praesidium de la Legión de María dedicado a la evangelización y servicio comunitario bajo la
+                        protección de nuestra Madre Celestial.
+                    </p>
+                </div>
+                <div class="text-center md:text-left">
+                    <h4 class="font-bold text-lg mb-4 text-beige-100 border-b border-celeste-500 pb-2 inline-block">Enlaces Rápidos</h4>
+                    <ul class="space-y-2 text-sm text-celeste-100">
+                        <li><a href="index.html" class="hover:text-white transition">Inicio</a></li>
+                        <li><a href="sobre-nosotros.html" class="hover:text-white transition">Sobre Nosotros</a></li>
+                        <li><a href="actividades.html" class="hover:text-white transition">Actividades</a></li>
+                        <li><a href="galeria.html" class="hover:text-white transition font-semibold text-white">Galería</a></li>
+                    </ul>
+                </div>
+                <div class="text-center md:text-left">
+                    <h4 class="font-bold text-lg mb-4 text-beige-100 border-b border-celeste-500 pb-2 inline-block">Síguenos</h4>
+                    <div class="flex justify-center md:justify-start space-x-4">
+                        <a href="#" class="w-10 h-10 bg-celeste-500 rounded-full flex items-center justify-center hover:bg-white hover:text-celeste-700 transition">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-celeste-500 rounded-full flex items-center justify-center hover:bg-white hover:text-celeste-700 transition">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-celeste-500 rounded-full flex items-center justify-center hover:bg-white hover:text-celeste-700 transition">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-celeste-500 pt-6 text-center text-sm text-celeste-200">
+                <p>&copy; <span id="year"></span> Legión de María - Reina de Los Ángeles. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL (Lightbox) PARA LA GALERÍA -->
+    <div id="lightbox" class="fixed inset-0 z-[100] hidden bg-black bg-opacity-80 flex items-center justify-center p-4">
+        <!-- Botón para cerrar -->
+        <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white hover:text-celeste-300 focus:outline-none transition">
+            <i class="fa-solid fa-xmark text-4xl drop-shadow-md"></i>
+        </button>
+        <!-- Imagen Ampliada -->
+        <img id="lightbox-img" src="" alt="Imagen ampliada" class="max-w-full max-h-full rounded-lg shadow-2xl border-4 border-white/10">
+    </div>
+
+    <script>
+        // Actualizar año en el footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+        
+        // Menú móvil
+        const btn = document.getElementById('mobile-menu-button');
+        const menu = document.getElementById('mobile-menu');
+        btn.addEventListener('click', () => { menu.classList.toggle('hidden'); });
+
+        // Lógica del Lightbox (Modal de Imágenes)
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+
+        function openLightbox(imageSrc) {
+            // Seleccionar el origen de la imagen original en caso de que esté usando el fallback de onerror
+            // Para asegurar que el lightbox cargue correctamente, forzamos buscar el src del elemento clickeado
+            const clickedImg = event.currentTarget.querySelector('img');
+            
+            lightboxImg.src = clickedImg.src;
+            lightbox.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Evita hacer scroll mientras el modal está abierto
+        }
+
+        function closeLightbox() {
+            lightbox.classList.add('hidden');
+            setTimeout(() => { lightboxImg.src = ''; }, 300); // Limpia la imagen tras la animación
+            document.body.style.overflow = 'auto'; // Restaura el scroll
+        }
+
+        // Cerrar modal al hacer clic en el fondo oscuro (fuera de la imagen)
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                closeLightbox();
+            }
+        });
+
+        // Cerrar modal al presionar la tecla ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape" && !lightbox.classList.contains('hidden')) {
+                closeLightbox();
+            }
+        });
+    </script>
+</body>
+
+</html>
